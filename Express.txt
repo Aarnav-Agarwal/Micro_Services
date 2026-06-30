@@ -1,0 +1,29 @@
+Express
+cors
+pg
+jsonwebtoken
+bcrypt
+joi
+nodemon
+body-parser
+
+
+Joi
+Joi is a validation library for Node.js used to validate incoming data before processing it.
+
+It is commonly used in:
+
+User Registration
+Login APIs
+Form Validation
+Request Body Validation
+Query Parameter Validation
+
+
+
+
+
+controllers-   working on the routes
+middlewares-    server side validation
+routes-        creating router for the routes
+models-         db.js connection, schema if mongo.

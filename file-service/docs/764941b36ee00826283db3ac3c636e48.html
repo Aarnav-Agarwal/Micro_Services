@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Bright Valley School</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;0,900;1,700;1,800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --cream:#FDF8F0;
+  --cream2:#F7F0E4;
+  --warm:#EDE5D4;
+  --navy:#0D1B3E;
+  --navy2:#162347;
+  --blue:#1A4DC2;
+  --gold:#D4A017;
+  --gold2:#F0BA30;
+  --green:#2E7D52;
+  --green2:#3BA06A;
+  --red:#C0392B;
+  --text:#1A1A2E;
+  --muted:#6B7280;
+  --border:#D9CEBC;
+  --font:'Playfair Display',serif;
+  --body:'Plus Jakarta Sans',sans-serif;
+  --mono:'Fira Code',monospace;
+  --shadow:0 8px 40px rgba(13,27,62,0.12);
+  --shadow2:0 20px 80px rgba(13,27,62,0.18);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{background:var(--cream);color:var(--text);font-family:var(--body);font-size:15px;line-height:1.65;overflow-x:hidden;}
+
+/* ── LOADER ── */
+#loader{position:fixed;inset:0;background:var(--navy);z-index:9999;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;transition:opacity 0.6s,visibility 0.6s;}
+#loader.hidden{opacity:0;visibility:hidden;}
+.loader-logo{font-family:var(--font);font-size:32px;font-weight:800;color:white;letter-spacing:-0.02em;}
+.loader-logo span{color:var(--gold2);}
+.loader-bar{width:200px;height:2px;background:rgba(255,255,255,0.15);border-radius:99px;overflow:hidden;}
+.loader-fill{height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:99px;animation:load 1.8s ease forwards;}
+@keyframes load{from{width:0;}to{width:100%;}}
+.loader-text{font-family:var(--mono);font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.1em;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:70px;padding:0 5vw;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(253,248,240,0.95);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:box-shadow 0.3s;
+}
+nav.scrolled{box-shadow:0 4px 30px rgba(13,27,62,0.08);}
+.nav-brand{display:flex;align-items:center;gap:12px;cursor:pointer;text-decoration:none;}
+.nav-emblem{width:40px;height:40px;background:var(--navy);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;overflow:hidden;}
+.nav-emblem::after{content:'✦';color:var(--gold2);font-size:18px;position:relative;z-index:1;}
+.nav-emblem::before{content:'';position:absolute;inset:0;background:radial-gradient(circle at 60% 40%,var(--blue),var(--navy));}
+.nav-name{font-family:var(--font);font-size:18px;font-weight:800;color:var(--navy);letter-spacing:-0.01em;line-height:1.1;}
+.nav-name small{display:block;font-family:var(--body);font-size:10px;font-weight:500;color:var(--muted);letter-spacing:0.06em;text-transform:uppercase;font-style:normal;}
+.nav-links{display:flex;gap:4px;align-items:center;}
+.nav-link{font-family:var(--body);font-size:13px;font-weight:600;color:var(--muted);padding:7px 14px;border-radius:6px;cursor:pointer;transition:all 0.2s;text-decoration:none;letter-spacing:0.01em;}
+.nav-link:hover,.nav-link.active{color:var(--navy);background:var(--warm);}
+.nav-link.active{color:var(--blue);}
+.nav-admit{background:var(--navy);color:white;font-family:var(--body);font-size:13px;font-weight:600;padding:9px 20px;border-radius:99px;cursor:pointer;transition:all 0.25s;border:none;letter-spacing:0.02em;}
+.nav-admit:hover{background:var(--blue);transform:translateY(-1px);box-shadow:0 6px 20px rgba(26,77,194,0.3);}
+.mobile-menu{display:none;cursor:pointer;padding:8px;}
+.mobile-menu span{display:block;width:22px;height:2px;background:var(--navy);margin:4px 0;transition:all 0.3s;}
+
+/* ── CANVAS ── */
+#particle-canvas{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.5;}
+
+/* ── PAGES ── */
+.page{display:none;padding-top:70px;position:relative;z-index:1;}
+.page.active{display:block;}
+
+/* ════════════════════════════
+   HOME PAGE
+════════════════════════════ */
+/* HERO */
+.hero{
+  min-height:calc(100vh - 70px);
+  display:grid;grid-template-columns:1fr 1fr;
+  align-items:center;gap:0;
+  padding:0 5vw;position:relative;overflow:hidden;
+  background:linear-gradient(135deg,var(--cream) 0%,var(--cream2) 100%);
+}
+.hero::before{
+  content:'';position:absolute;right:-10%;top:-20%;
+  width:70%;height:140%;
+  background:radial-gradient(ellipse,rgba(26,77,194,0.05) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-shapes{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.shape{position:absolute;border-radius:50%;filter:blur(60px);opacity:0.12;}
+.s1{width:400px;height:400px;background:var(--gold);top:-100px;right:5%;}
+.s2{width:300px;height:300px;background:var(--blue);bottom:-50px;right:25%;}
+.s3{width:200px;height:200px;background:var(--green);top:30%;left:-5%;}
+.hero-left{padding:80px 0;}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;background:rgba(212,160,23,0.1);border:1px solid rgba(212,160,23,0.25);padding:6px 14px;border-radius:99px;margin-bottom:28px;}
+.hero-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--gold);animation:pulse3 2s infinite;}
+@keyframes pulse3{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.4);opacity:0.6;}}
+.hero-badge-text{font-family:var(--body);font-size:12px;font-weight:600;color:var(--gold);letter-spacing:0.04em;}
+.hero h1{
+  font-family:var(--font);font-size:clamp(40px,5vw,72px);
+  font-weight:900;line-height:1.0;letter-spacing:-0.03em;
+  color:var(--navy);margin-bottom:20px;
+}
+.hero h1 em{font-style:italic;color:var(--blue);}
+.hero h1 .gold{color:var(--gold);}
+.hero-sub{font-size:16px;color:var(--muted);line-height:1.8;max-width:480px;margin-bottom:36px;}
+.hero-actions{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:48px;}
+.btn-navy{background:var(--navy);color:white;font-family:var(--body);font-size:14px;font-weight:600;padding:14px 28px;border-radius:99px;border:none;cursor:pointer;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;letter-spacing:0.01em;}
+.btn-navy:hover{background:var(--blue);transform:translateY(-2px);box-shadow:0 8px 30px rgba(26,77,194,0.3);}
+.btn-outline{background:transparent;color:var(--navy);font-family:var(--body);font-size:14px;font-weight:600;padding:13px 28px;border-radius:99px;border:2px solid var(--border);cursor:pointer;transition:all 0.25s;display:inline-flex;align-items:center;gap:8px;}
+.btn-outline:hover{border-color:var(--navy);background:var(--warm);}
+.hero-metrics{display:flex;gap:32px;}
+.hm{text-align:left;}
+.hm-num{font-family:var(--font);font-size:32px;font-weight:800;color:var(--navy);line-height:1;}
+.hm-num span{color:var(--blue);}
+.hm-lbl{font-size:12px;color:var(--muted);margin-top:4px;}
+.hero-right{display:flex;align-items:center;justify-content:center;height:100%;padding:60px 0 60px 40px;}
+.hero-visual{position:relative;width:100%;}
+.hero-main-card{
+  background:white;border-radius:24px;padding:32px;
+  box-shadow:var(--shadow2);
+  position:relative;overflow:hidden;
+  border:1px solid rgba(255,255,255,0.8);
+}
+.hero-main-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:linear-gradient(90deg,var(--navy),var(--blue),var(--gold));}
+.school-scene{height:260px;position:relative;display:flex;align-items:center;justify-content:center;}
+.building-svg{width:100%;height:100%;}
+.float-badge{
+  position:absolute;background:white;border-radius:12px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.12);padding:12px 16px;
+  display:flex;align-items:center;gap:10px;
+}
+.fb-top-right{top:20px;right:0;animation:float1 3s ease-in-out infinite;}
+.fb-bottom-left{bottom:10px;left:0;animation:float2 3.5s ease-in-out infinite;}
+.fb-bottom-right{bottom:30px;right:-10px;animation:float1 4s ease-in-out infinite 0.5s;}
+@keyframes float1{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+@keyframes float2{0%,100%{transform:translateY(0);}50%{transform:translateY(8px);}}
+.fb-icon{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.fb-label{font-family:var(--body);font-size:11px;color:var(--muted);margin-bottom:2px;}
+.fb-value{font-family:var(--font);font-size:15px;font-weight:700;color:var(--navy);line-height:1;}
+
+/* MARQUEE */
+.ticker{background:var(--navy);color:white;padding:12px 0;overflow:hidden;}
+.ticker-track{display:flex;gap:60px;animation:marquee 25s linear infinite;white-space:nowrap;}
+.ticker-item{font-family:var(--body);font-size:13px;font-weight:500;color:rgba(255,255,255,0.7);display:flex;align-items:center;gap:16px;}
+.ticker-item::before{content:'★';color:var(--gold2);font-size:10px;}
+@keyframes marquee{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* STATS STRIP */
+.stats-strip{padding:70px 5vw;display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--border);border-top:1px solid var(--border);border-bottom:1px solid var(--border);}
+.stat-block{background:var(--cream);padding:36px 24px;text-align:center;position:relative;overflow:hidden;transition:background 0.25s;}
+.stat-block:hover{background:white;}
+.stat-block::after{content:'';position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:0;height:3px;background:var(--blue);transition:width 0.3s;border-radius:99px;}
+.stat-block:hover::after{width:60%;}
+.stat-num{font-family:var(--font);font-size:52px;font-weight:800;letter-spacing:-0.04em;line-height:1;margin-bottom:8px;color:var(--navy);}
+.stat-num em{font-style:normal;color:var(--blue);}
+.stat-lbl{font-size:14px;color:var(--muted);}
+
+/* ABOUT STRIP */
+.about-strip{padding:80px 5vw;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;background:var(--navy);}
+.about-text h2{font-family:var(--font);font-size:clamp(30px,3.5vw,48px);font-weight:800;color:white;letter-spacing:-0.02em;line-height:1.1;margin-bottom:20px;}
+.about-text h2 em{font-style:italic;color:var(--gold2);}
+.about-text p{font-size:15px;color:rgba(255,255,255,0.55);line-height:1.8;margin-bottom:20px;}
+.about-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px;}
+.atag{font-size:12px;font-weight:600;padding:6px 14px;border-radius:99px;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.6);transition:all 0.2s;cursor:default;}
+.atag:hover{border-color:var(--gold2);color:var(--gold2);}
+.about-right{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.acard{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;transition:all 0.25s;cursor:default;}
+.acard:hover{background:rgba(255,255,255,0.07);border-color:rgba(255,255,255,0.15);transform:translateY(-3px);}
+.acard-icon{font-size:28px;margin-bottom:12px;}
+.acard-title{font-family:var(--font);font-size:16px;font-weight:700;color:white;margin-bottom:6px;}
+.acard-desc{font-size:12px;color:rgba(255,255,255,0.45);line-height:1.6;}
+.acard.tall{grid-row:span 2;display:flex;flex-direction:column;justify-content:flex-end;}
+
+/* PROGRAMS */
+.programs{padding:80px 5vw;background:var(--cream);}
+.section-eyebrow{font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--blue);margin-bottom:12px;display:flex;align-items:center;gap:10px;}
+.section-eyebrow::before{content:'';width:24px;height:2px;background:var(--blue);border-radius:99px;}
+.section-h{font-family:var(--font);font-size:clamp(28px,3.5vw,46px);font-weight:800;letter-spacing:-0.02em;line-height:1.1;color:var(--navy);margin-bottom:48px;}
+.section-h span{color:var(--muted);}
+.programs-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.prog-card{
+  background:white;border-radius:20px;overflow:hidden;
+  border:1px solid var(--border);transition:all 0.3s;
+  cursor:pointer;position:relative;
+}
+.prog-card:hover{transform:translateY(-6px);box-shadow:var(--shadow2);border-color:transparent;}
+.prog-card:hover .prog-img{transform:scale(1.05);}
+.prog-img-wrap{height:200px;overflow:hidden;position:relative;}
+.prog-img{height:100%;width:100%;display:flex;align-items:center;justify-content:center;transition:transform 0.4s;font-size:80px;}
+.prog-body{padding:24px;}
+.prog-level{font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;}
+.prog-title{font-family:var(--font);font-size:20px;font-weight:700;color:var(--navy);margin-bottom:8px;letter-spacing:-0.01em;}
+.prog-desc{font-size:13px;color:var(--muted);line-height:1.65;margin-bottom:16px;}
+.prog-meta{display:flex;gap:16px;}
+.pmeta{font-size:12px;color:var(--muted);display:flex;align-items:center;gap:5px;}
+.pmeta::before{content:'•';color:var(--blue);}
+
+/* EVENTS */
+.events-section{padding:80px 5vw;background:var(--cream2);}
+.events-grid{display:grid;grid-template-columns:1fr 380px;gap:40px;}
+.event-list{display:flex;flex-direction:column;gap:0;}
+.event-item{
+  display:flex;gap:24px;align-items:flex-start;
+  padding:24px 0;border-bottom:1px solid var(--border);
+  cursor:pointer;transition:all 0.2s;
+}
+.event-item:last-child{border-bottom:none;}
+.event-item:hover{padding-left:8px;}
+.event-date-box{width:56px;height:56px;background:var(--navy);border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex-shrink:0;}
+.ed-day{font-family:var(--font);font-size:22px;font-weight:800;color:white;line-height:1;}
+.ed-mon{font-size:9px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.1em;}
+.event-info h4{font-family:var(--font);font-size:17px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.event-info p{font-size:13px;color:var(--muted);}
+.event-tag{margin-top:8px;display:inline-block;font-size:11px;font-weight:600;padding:3px 10px;border-radius:99px;}
+.events-highlight{background:var(--navy);border-radius:20px;padding:32px;color:white;position:relative;overflow:hidden;}
+.events-highlight::before{content:'';position:absolute;top:-60px;right:-60px;width:200px;height:200px;background:radial-gradient(circle,rgba(240,186,48,0.15),transparent 70%);}
+.eh-label{font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gold2);margin-bottom:16px;}
+.eh-title{font-family:var(--font);font-size:26px;font-weight:800;color:white;margin-bottom:12px;line-height:1.2;}
+.eh-desc{font-size:14px;color:rgba(255,255,255,0.5);line-height:1.7;margin-bottom:24px;}
+.eh-countdown{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:24px;}
+.ehc-item{background:rgba(255,255,255,0.06);border-radius:10px;padding:12px 8px;text-align:center;}
+.ehc-num{font-family:var(--font);font-size:28px;font-weight:800;color:white;line-height:1;}
+.ehc-lbl{font-size:9px;color:rgba(255,255,255,0.35);text-transform:uppercase;letter-spacing:0.08em;margin-top:2px;}
+
+/* GALLERY */
+.gallery{padding:80px 5vw;background:var(--cream);}
+.gallery-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:200px 200px;gap:14px;}
+.gitem{border-radius:16px;overflow:hidden;position:relative;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:60px;transition:transform 0.3s;background:var(--warm);}
+.gitem:hover{transform:scale(1.02);}
+.gitem::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(13,27,62,0.4));opacity:0;transition:opacity 0.3s;}
+.gitem:hover::after{opacity:1;}
+.gitem.span2{grid-column:span 2;}
+.gitem.tall{grid-row:span 2;}
+
+/* TESTIMONIALS */
+.testimonials{padding:80px 5vw;background:var(--navy);overflow:hidden;}
+.testi-track-wrap{overflow:hidden;margin-top:48px;position:relative;}
+.testi-track-wrap::before,.testi-track-wrap::after{content:'';position:absolute;top:0;bottom:0;width:100px;z-index:2;}
+.testi-track-wrap::before{left:0;background:linear-gradient(to right,var(--navy),transparent);}
+.testi-track-wrap::after{right:0;background:linear-gradient(to left,var(--navy),transparent);}
+.testi-track{display:flex;gap:20px;animation:slider 30s linear infinite;width:max-content;}
+.testi-card{width:340px;flex-shrink:0;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);border-radius:18px;padding:28px;transition:background 0.2s;}
+.testi-stars{color:var(--gold2);font-size:14px;margin-bottom:12px;letter-spacing:2px;}
+.testi-text{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.8;font-style:italic;margin-bottom:20px;}
+.testi-author{display:flex;align-items:center;gap:12px;}
+.testi-av{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:14px;font-weight:700;color:white;flex-shrink:0;}
+.testi-name{font-family:var(--font);font-size:14px;font-weight:700;color:white;}
+.testi-role{font-size:11px;color:rgba(255,255,255,0.35);margin-top:1px;}
+@keyframes slider{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+
+/* CONTACT CTA */
+.cta-band{padding:80px 5vw;background:linear-gradient(135deg,var(--blue),var(--navy));position:relative;overflow:hidden;text-align:center;}
+.cta-band::before{content:'';position:absolute;top:-50%;left:20%;width:500px;height:500px;background:radial-gradient(circle,rgba(240,186,48,0.1),transparent 60%);}
+.cta-band h2{font-family:var(--font);font-size:clamp(28px,3.5vw,48px);font-weight:800;color:white;letter-spacing:-0.02em;margin-bottom:16px;position:relative;}
+.cta-band p{font-size:16px;color:rgba(255,255,255,0.6);margin-bottom:32px;max-width:500px;margin-left:auto;margin-right:auto;}
+.btn-gold{background:var(--gold2);color:var(--navy);font-family:var(--body);font-size:15px;font-weight:700;padding:15px 36px;border-radius:99px;border:none;cursor:pointer;transition:all 0.25s;display:inline-flex;align-items:center;gap:10px;letter-spacing:0.02em;}
+.btn-gold:hover{background:white;transform:translateY(-2px);box-shadow:0 10px 40px rgba(0,0,0,0.2);}
+
+/* ════════════════════════════
+   ACADEMICS PAGE
+════════════════════════════ */
+.academics-hero{padding:80px 5vw 60px;background:linear-gradient(135deg,var(--cream) 0%,var(--cream2) 100%);}
+.academics-hero h1{font-family:var(--font);font-size:clamp(40px,5vw,68px);font-weight:900;letter-spacing:-0.03em;line-height:1.0;color:var(--navy);margin-bottom:16px;}
+.academics-hero h1 em{font-style:italic;color:var(--blue);}
+.academics-hero p{font-size:16px;color:var(--muted);max-width:560px;line-height:1.8;}
+.curriculum-section{padding:60px 5vw;background:white;}
+.curr-tabs{display:flex;gap:4px;margin-bottom:40px;border-bottom:2px solid var(--border);}
+.curr-tab{font-family:var(--body);font-size:13px;font-weight:600;padding:10px 20px;cursor:pointer;border-bottom:3px solid transparent;margin-bottom:-2px;color:var(--muted);transition:all 0.2s;}
+.curr-tab.active,.curr-tab:hover{color:var(--blue);border-bottom-color:var(--blue);}
+.curr-panel{display:none;}
+.curr-panel.active{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.subj-card{background:var(--cream);border:1px solid var(--border);border-radius:14px;padding:22px;transition:all 0.25s;cursor:default;}
+.subj-card:hover{background:white;border-color:var(--blue);transform:translateY(-3px);box-shadow:0 10px 30px rgba(13,27,62,0.08);}
+.subj-icon{font-size:28px;margin-bottom:12px;}
+.subj-name{font-family:var(--font);font-size:17px;font-weight:700;color:var(--navy);margin-bottom:6px;}
+.subj-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.faculties-section{padding:60px 5vw;background:var(--cream2);}
+.faculty-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px;}
+.faculty-card{background:white;border-radius:18px;overflow:hidden;border:1px solid var(--border);transition:all 0.3s;cursor:pointer;}
+.faculty-card:hover{transform:translateY(-4px);box-shadow:var(--shadow);}
+.faculty-av{height:160px;display:flex;align-items:center;justify-content:center;font-size:56px;position:relative;}
+.faculty-info{padding:18px;}
+.faculty-name{font-family:var(--font);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:2px;}
+.faculty-dept{font-size:12px;color:var(--blue);font-weight:600;margin-bottom:4px;}
+.faculty-exp{font-size:12px;color:var(--muted);}
+.results-section{padding:60px 5vw;background:var(--navy);}
+.results-grid{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:48px;align-items:center;}
+.result-bars{display:flex;flex-direction:column;gap:16px;}
+.rbar-item{background:rgba(255,255,255,0.04);border-radius:12px;padding:18px 20px;}
+.rbar-head{display:flex;justify-content:space-between;margin-bottom:10px;}
+.rbar-subject{font-family:var(--body);font-size:13px;font-weight:600;color:white;}
+.rbar-pct{font-family:var(--font);font-size:15px;font-weight:700;color:var(--gold2);}
+.rbar-track{height:6px;background:rgba(255,255,255,0.1);border-radius:99px;overflow:hidden;}
+.rbar-fill{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--blue),var(--gold2));transition:width 1s ease;}
+.result-stats{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.rs-card{background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08);border-radius:14px;padding:24px;text-align:center;}
+.rs-num{font-family:var(--font);font-size:40px;font-weight:800;color:var(--gold2);line-height:1;}
+.rs-lbl{font-size:12px;color:rgba(255,255,255,0.45);margin-top:6px;}
+
+/* ════════════════════════════
+   ADMISSIONS PAGE
+════════════════════════════ */
+.admissions-hero{padding:80px 5vw 60px;background:var(--navy);color:white;}
+.admissions-hero h1{font-family:var(--font);font-size:clamp(40px,5vw,68px);font-weight:900;letter-spacing:-0.03em;line-height:1.0;margin-bottom:16px;}
+.admissions-hero h1 em{font-style:italic;color:var(--gold2);}
+.admissions-hero p{font-size:16px;color:rgba(255,255,255,0.55);max-width:560px;line-height:1.8;}
+.process-section{padding:80px 5vw;background:var(--cream);}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:24px;margin-top:48px;position:relative;}
+.process-steps::before{content:'';position:absolute;top:32px;left:calc(12.5% + 16px);right:calc(12.5% + 16px);height:2px;background:linear-gradient(90deg,var(--blue),var(--gold));border-radius:99px;}
+.step-card{text-align:center;position:relative;}
+.step-num{width:64px;height:64px;background:white;border:3px solid var(--blue);border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:var(--font);font-size:22px;font-weight:800;color:var(--blue);margin:0 auto 16px;position:relative;z-index:1;transition:all 0.3s;}
+.step-card:hover .step-num{background:var(--blue);color:white;transform:scale(1.1);}
+.step-title{font-family:var(--font);font-size:16px;font-weight:700;color:var(--navy);margin-bottom:8px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6;}
+.fees-section{padding:80px 5vw;background:white;}
+.fees-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:48px;}
+.fee-card{background:var(--cream);border-radius:20px;padding:32px 28px;border:2px solid var(--border);transition:all 0.3s;position:relative;overflow:hidden;}
+.fee-card::before{content:'';position:absolute;top:0;left:0;right:0;height:4px;background:var(--border);transition:background 0.3s;}
+.fee-card:hover{border-color:var(--blue);transform:translateY(-4px);box-shadow:var(--shadow2);}
+.fee-card:hover::before{background:var(--blue);}
+.fee-card.featured{border-color:var(--gold);background:var(--navy);}
+.fee-card.featured::before{background:var(--gold);}
+.fee-level{font-family:var(--body);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:8px;}
+.fee-card.featured .fee-level{color:var(--gold2);}
+.fee-name{font-family:var(--font);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:4px;line-height:1.1;}
+.fee-card.featured .fee-name,.fee-card.featured .fee-desc,.fee-card.featured .fee-list li{color:white;}
+.fee-desc{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.fee-amount{font-family:var(--font);font-size:38px;font-weight:800;color:var(--blue);line-height:1;margin-bottom:6px;}
+.fee-card.featured .fee-amount{color:var(--gold2);}
+.fee-period{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.fee-list{list-style:none;display:flex;flex-direction:column;gap:8px;}
+.fee-list li{font-size:13px;color:var(--muted);display:flex;align-items:flex-start;gap:8px;line-height:1.5;}
+.fee-list li::before{content:'✓';color:var(--green2);font-weight:700;flex-shrink:0;}
+.apply-form{padding:80px 5vw;background:var(--cream2);}
+.apply-grid{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;}
+.apply-info h2{font-family:var(--font);font-size:34px;font-weight:800;color:var(--navy);margin-bottom:16px;}
+.apply-info p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:20px;}
+.apply-checklist{display:flex;flex-direction:column;gap:12px;margin-top:24px;}
+.ac-item{display:flex;align-items:flex-start;gap:12px;font-size:14px;color:var(--muted);}
+.ac-check{width:22px;height:22px;border-radius:50%;background:rgba(46,125,82,0.1);border:1px solid rgba(46,125,82,0.3);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+.ac-check::after{content:'✓';font-size:11px;color:var(--green2);font-weight:700;}
+.form-card{background:white;border-radius:24px;padding:36px;box-shadow:var(--shadow);border:1px solid var(--border);}
+.form-card h3{font-family:var(--font);font-size:22px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.form-card p{font-size:13px;color:var(--muted);margin-bottom:28px;}
+.form-group{margin-bottom:18px;}
+.form-label{font-family:var(--body);font-size:12px;font-weight:600;letter-spacing:0.04em;text-transform:uppercase;color:var(--muted);display:block;margin-bottom:7px;}
+.form-input{width:100%;padding:12px 16px;border:1.5px solid var(--border);border-radius:10px;background:var(--cream);font-family:var(--body);font-size:14px;color:var(--text);outline:none;transition:border-color 0.2s;}
+.form-input:focus{border-color:var(--blue);background:white;}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+select.form-input{cursor:pointer;}
+textarea.form-input{resize:vertical;min-height:100px;}
+.form-submit{width:100%;padding:14px;background:var(--navy);color:white;font-family:var(--body);font-size:15px;font-weight:700;border:none;border-radius:10px;cursor:pointer;transition:all 0.25s;letter-spacing:0.02em;}
+.form-submit:hover{background:var(--blue);transform:translateY(-1px);box-shadow:0 8px 25px rgba(26,77,194,0.3);}
+
+/* ════════════════════════════
+   GALLERY PAGE
+════════════════════════════ */
+.gallery-hero{padding:80px 5vw 48px;}
+.gallery-hero h1{font-family:var(--font);font-size:clamp(40px,5vw,68px);font-weight:900;letter-spacing:-0.03em;color:var(--navy);}
+.gallery-filter{display:flex;gap:8px;flex-wrap:wrap;margin:32px 0;}
+.gf-btn{font-family:var(--body);font-size:12px;font-weight:600;padding:8px 18px;border-radius:99px;border:1.5px solid var(--border);color:var(--muted);cursor:pointer;transition:all 0.2s;}
+.gf-btn.active,.gf-btn:hover{background:var(--navy);color:white;border-color:var(--navy);}
+.full-gallery{padding:0 5vw 80px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.fg-item{border-radius:16px;overflow:hidden;position:relative;cursor:pointer;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;font-size:70px;transition:all 0.3s;background:var(--warm);}
+.fg-item:hover{transform:scale(1.02);box-shadow:0 12px 40px rgba(13,27,62,0.15);}
+.fg-overlay{position:absolute;inset:0;background:linear-gradient(to bottom,transparent 40%,rgba(13,27,62,0.75));opacity:0;transition:opacity 0.3s;display:flex;align-items:flex-end;padding:20px;}
+.fg-item:hover .fg-overlay{opacity:1;}
+.fg-caption{font-family:var(--font);font-size:16px;font-weight:700;color:white;}
+.fg-sub{font-size:12px;color:rgba(255,255,255,0.6);margin-top:2px;}
+
+/* ════════════════════════════
+   CONTACT PAGE
+════════════════════════════ */
+.contact-layout{display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 70px);}
+.contact-left{background:var(--navy);padding:6vw 5vw;display:flex;flex-direction:column;justify-content:space-between;color:white;position:relative;overflow:hidden;}
+.contact-left::before{content:'';position:absolute;bottom:-100px;right:-100px;width:400px;height:400px;background:radial-gradient(circle,rgba(240,186,48,0.08),transparent 70%);}
+.contact-left h1{font-family:var(--font);font-size:clamp(34px,4vw,52px);font-weight:800;letter-spacing:-0.02em;line-height:1.1;margin-bottom:16px;}
+.contact-left h1 em{font-style:italic;color:var(--gold2);}
+.contact-left p{font-size:15px;color:rgba(255,255,255,0.5);line-height:1.8;max-width:380px;}
+.contact-info-list{margin-top:48px;display:flex;flex-direction:column;gap:24px;}
+.ci-item{display:flex;gap:16px;align-items:flex-start;}
+.ci-icon{width:44px;height:44px;border:1px solid rgba(255,255,255,0.12);border-radius:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px;background:rgba(255,255,255,0.04);}
+.ci-label{font-family:var(--body);font-size:11px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-bottom:4px;}
+.ci-val{font-size:14px;color:rgba(255,255,255,0.8);line-height:1.5;}
+.map-placeholder{height:200px;border-radius:16px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;margin-top:32px;font-size:32px;}
+.map-sub{font-size:13px;color:rgba(255,255,255,0.3);}
+.contact-right{padding:6vw 5vw;background:var(--cream);}
+.contact-right h2{font-family:var(--font);font-size:28px;font-weight:800;color:var(--navy);margin-bottom:6px;}
+.contact-right p{font-size:14px;color:var(--muted);margin-bottom:32px;}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);color:white;padding:60px 5vw 30px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:48px;margin-bottom:48px;}
+.footer-brand-name{font-family:var(--font);font-size:22px;font-weight:800;color:white;margin-bottom:4px;}
+.footer-brand-name span{color:var(--gold2);}
+.footer-brand-tag{font-size:11px;color:rgba(255,255,255,0.3);letter-spacing:0.06em;margin-bottom:14px;}
+.footer-brand-desc{font-size:13px;color:rgba(255,255,255,0.4);line-height:1.75;max-width:260px;}
+.footer-col h4{font-family:var(--body);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.1em;color:rgba(255,255,255,0.3);margin-bottom:16px;}
+.footer-col ul{list-style:none;display:flex;flex-direction:column;gap:9px;}
+.footer-col li{font-size:13px;color:rgba(255,255,255,0.5);cursor:pointer;transition:color 0.2s;}
+.footer-col li:hover{color:var(--gold2);}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.07);padding-top:24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:gap 16px;}
+.footer-copy{font-size:12px;color:rgba(255,255,255,0.25);}
+.footer-accred{display:flex;gap:12px;align-items:center;}
+.accred-pill{font-size:11px;font-weight:600;padding:4px 12px;border-radius:99px;border:1px solid rgba(255,255,255,0.12);color:rgba(255,255,255,0.4);}
+
+/* ── MOBILE NAV ── */
+.mobile-nav{display:none;position:fixed;top:70px;left:0;right:0;background:white;z-index:150;border-bottom:1px solid var(--border);padding:16px;flex-direction:column;gap:4px;}
+.mobile-nav.open{display:flex;}
+.mn-link{font-family:var(--body);font-size:14px;font-weight:600;color:var(--muted);padding:10px 16px;border-radius:8px;cursor:pointer;}
+.mn-link.active,.mn-link:hover{background:var(--warm);color:var(--navy);}
+
+/* ── SCROLL ANIMATION ── */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity 0.6s ease,transform 0.6s ease;}
+.reveal.visible{opacity:1;transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-logo">Bright <span>Valley</span> School</div>
+  <div class="loader-bar"><div class="loader-fill"></div></div>
+  <div class="loader-text">Loading excellence...</div>
+</div>
+
+<canvas id="particle-canvas"></canvas>
+
+<!-- NAV -->
+<nav id="main-nav">
+  <div class="nav-brand" onclick="showPage('home')">
+    <div class="nav-emblem"></div>
+    <div class="nav-name">Bright Valley School<small>Est. 1998 · CBSE Affiliated</small></div>
+  </div>
+  <div class="nav-links" id="nav-links">
+    <div class="nav-link active" id="nl-home" onclick="showPage('home')">Home</div>
+    <div class="nav-link" id="nl-academics" onclick="showPage('academics')">Academics</div>
+    <div class="nav-link" id="nl-admissions" onclick="showPage('admissions')">Admissions</div>
+    <div class="nav-link" id="nl-gallery" onclick="showPage('gallery')">Gallery</div>
+    <div class="nav-link" id="nl-contact" onclick="showPage('contact')">Contact</div>
+  </div>
+  <button class="nav-admit" onclick="showPage('admissions')">Apply Now →</button>
+  <div class="mobile-menu" id="mob-toggle" onclick="toggleMobileMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+<div class="mobile-nav" id="mobile-nav">
+  <div class="mn-link active" onclick="showPage('home');toggleMobileMenu()">Home</div>
+  <div class="mn-link" onclick="showPage('academics');toggleMobileMenu()">Academics</div>
+  <div class="mn-link" onclick="showPage('admissions');toggleMobileMenu()">Admissions</div>
+  <div class="mn-link" onclick="showPage('gallery');toggleMobileMenu()">Gallery</div>
+  <div class="mn-link" onclick="showPage('contact');toggleMobileMenu()">Contact</div>
+</div>
+
+<!-- ═══════════ HOME ═══════════ -->
+<div id="page-home" class="page active">
+  <section class="hero">
+    <div class="hero-shapes"><div class="shape s1"></div><div class="shape s2"></div><div class="shape s3"></div></div>
+    <div class="hero-left">
+      <div class="hero-badge"><div class="hero-badge-dot"></div><span class="hero-badge-text">Admissions Open 2025–26</span></div>
+      <h1>Where Every<br><em>Child</em><br><span class="gold">Shines.</span></h1>
+      <p class="hero-sub">A CBSE-affiliated school dedicated to holistic education — nurturing curious minds, confident hearts, and compassionate citizens since 1998.</p>
+      <div class="hero-actions">
+        <button class="btn-navy" onclick="showPage('admissions')">Apply for Admission <span>→</span></button>
+        <button class="btn-outline" onclick="showPage('academics')">Explore Curriculum</button>
+      </div>
+      <div class="hero-metrics">
+        <div class="hm"><div class="hm-num">2,<span>400</span></div><div class="hm-lbl">Students Enrolled</div></div>
+        <div class="hm"><div class="hm-num">98<span>%</span></div><div class="hm-lbl">Board Pass Rate</div></div>
+        <div class="hm"><div class="hm-num">120<span>+</span></div><div class="hm-lbl">Faculty Members</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-visual">
+        <div class="hero-main-card">
+          <div class="school-scene">
+            <svg class="building-svg" viewBox="0 0 400 260" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <!-- Sky bg -->
+              <rect width="400" height="260" fill="#EEF4FF" rx="12"/>
+              <!-- Sun -->
+              <circle cx="340" cy="50" r="28" fill="#FFF0C0" opacity="0.8"/>
+              <circle cx="340" cy="50" r="20" fill="#FFD700" opacity="0.9"/>
+              <!-- Clouds -->
+              <ellipse cx="80" cy="45" rx="40" ry="18" fill="white" opacity="0.8"/>
+              <ellipse cx="100" cy="38" rx="30" ry="16" fill="white" opacity="0.9"/>
+              <ellipse cx="200" cy="35" rx="35" ry="16" fill="white" opacity="0.7"/>
+              <ellipse cx="220" cy="28" rx="26" ry="14" fill="white" opacity="0.8"/>
+              <!-- Ground -->
+              <rect y="210" width="400" height="50" fill="#7CB87A" rx="0"/>
+              <rect y="215" width="400" height="8" fill="#5EA85B" rx="0"/>
+              <!-- Main building -->
+              <rect x="80" y="90" width="240" height="130" fill="#1A4DC2" rx="4"/>
+              <rect x="80" y="90" width="240" height="20" fill="#0D1B3E" rx="4"/>
+              <!-- Windows row 1 -->
+              <rect x="100" y="120" width="28" height="24" fill="#A8C4FF" rx="3"/>
+              <rect x="144" y="120" width="28" height="24" fill="#A8C4FF" rx="3"/>
+              <rect x="228" y="120" width="28" height="24" fill="#A8C4FF" rx="3"/>
+              <rect x="272" y="120" width="28" height="24" fill="#A8C4FF" rx="3"/>
+              <!-- Windows row 2 -->
+              <rect x="100" y="158" width="28" height="24" fill="#FFF5CC" rx="3"/>
+              <rect x="144" y="158" width="28" height="24" fill="#A8C4FF" rx="3"/>
+              <rect x="228" y="158" width="28" height="24" fill="#A8C4FF" rx="3"/>
+              <rect x="272" y="158" width="28" height="24" fill="#FFF5CC" rx="3"/>
+              <!-- Door -->
+              <rect x="176" y="170" width="48" height="50" fill="#D4A017" rx="4"/>
+              <rect x="182" y="176" width="16" height="26" fill="#0D1B3E" rx="2"/>
+              <rect x="202" y="176" width="16" height="26" fill="#0D1B3E" rx="2"/>
+              <circle cx="201" cy="200" r="2.5" fill="#FFD700"/>
+              <!-- Roof triangle -->
+              <polygon points="200,55 80,90 320,90" fill="#0D1B3E"/>
+              <polygon points="200,62 88,90 312,90" fill="#162347"/>
+              <!-- Flag -->
+              <line x1="200" y1="30" x2="200" y2="65" stroke="#888" stroke-width="2"/>
+              <rect x="200" y="30" width="20" height="14" fill="#D4A017" rx="1"/>
+              <!-- Trees -->
+              <circle cx="40" cy="190" r="28" fill="#3BA06A"/>
+              <circle cx="40" cy="178" r="22" fill="#2E7D52"/>
+              <rect x="37" y="205" width="6" height="20" fill="#5C3A1E"/>
+              <circle cx="360" cy="190" r="28" fill="#3BA06A"/>
+              <circle cx="360" cy="178" r="22" fill="#2E7D52"/>
+              <rect x="357" y="205" width="6" height="20" fill="#5C3A1E"/>
+              <!-- Path -->
+              <rect x="185" y="220" width="30" height="30" fill="#D9CEBC" rx="2"/>
+              <!-- Pillars -->
+              <rect x="168" y="140" width="10" height="80" fill="#0D1B3E"/>
+              <rect x="222" y="140" width="10" height="80" fill="#0D1B3E"/>
+              <!-- School sign -->
+              <rect x="130" y="97" width="140" height="14" fill="#D4A017" rx="2"/>
+              <text x="200" y="108" fill="white" font-size="8" font-family="serif" text-anchor="middle" font-weight="bold">BRIGHT VALLEY SCHOOL</text>
+            </svg>
+          </div>
+          <div class="float-badge fb-top-right">
+            <div class="fb-icon" style="background:rgba(26,77,194,0.1)">🎓</div>
+            <div><div class="fb-label">Board Result</div><div class="fb-value" style="color:var(--blue)">98% Pass</div></div>
+          </div>
+          <div class="float-badge fb-bottom-left">
+            <div class="fb-icon" style="background:rgba(46,125,82,0.1)">🌿</div>
+            <div><div class="fb-label">Campus</div><div class="fb-value" style="color:var(--green)">8 Acres</div></div>
+          </div>
+          <div class="float-badge fb-bottom-right">
+            <div class="fb-icon" style="background:rgba(212,160,23,0.1)">⭐</div>
+            <div><div class="fb-label">Rating</div><div class="fb-value" style="color:var(--gold)">4.9 / 5</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="ticker">
+    <div class="ticker-track" id="ticker-track">
+      <div class="ticker-item">Admissions Open for 2025–26</div>
+      <div class="ticker-item">Annual Sports Day — May 15th</div>
+      <div class="ticker-item">Class 10 & 12 Results: 98% Pass Rate</div>
+      <div class="ticker-item">New Science Lab Inauguration</div>
+      <div class="ticker-item">Scholarship Exam — April 20th</div>
+      <div class="ticker-item">Parent-Teacher Meeting — April 12th</div>
+      <div class="ticker-item">Admissions Open for 2025–26</div>
+      <div class="ticker-item">Annual Sports Day — May 15th</div>
+      <div class="ticker-item">Class 10 & 12 Results: 98% Pass Rate</div>
+      <div class="ticker-item">New Science Lab Inauguration</div>
+      <div class="ticker-item">Scholarship Exam — April 20th</div>
+      <div class="ticker-item">Parent-Teacher Meeting — April 12th</div>
+    </div>
+  </div>
+
+  <div class="stats-strip reveal">
+    <div class="stat-block"><div class="stat-num">26<em>+</em></div><div class="stat-lbl">Years of Excellence</div></div>
+    <div class="stat-block"><div class="stat-num">2,400<em>+</em></div><div class="stat-lbl">Students Enrolled</div></div>
+    <div class="stat-block"><div class="stat-num">120<em>+</em></div><div class="stat-lbl">Qualified Faculty</div></div>
+    <div class="stat-block"><div class="stat-num">300<em>+</em></div><div class="stat-lbl">Awards Won</div></div>
+  </div>
+
+  <section class="about-strip reveal">
+    <div class="about-text">
+      <div class="section-eyebrow" style="border:none;color:var(--gold2);">About Our School</div>
+      <h2>Nurturing <em>Brilliance</em>,<br>Building Character.</h2>
+      <p>Bright Valley School has been a pillar of educational excellence since 1998. Our CBSE-affiliated institution blends rigorous academics with a rich co-curricular program to develop well-rounded individuals.</p>
+      <p>With a sprawling 8-acre campus, state-of-the-art facilities, and a faculty of passionate educators, we create an environment where every student can discover their unique potential.</p>
+      <div class="about-tags">
+        <span class="atag">CBSE Affiliated</span>
+        <span class="atag">ISO 9001:2015</span>
+        <span class="atag">Smart Classrooms</span>
+        <span class="atag">Digital Library</span>
+        <span class="atag">Olympics Coaching</span>
+        <span class="atag">Music & Arts</span>
+      </div>
+    </div>
+    <div class="about-right">
+      <div class="acard tall" style="background:rgba(240,186,48,0.08);border-color:rgba(240,186,48,0.15);">
+        <div class="acard-icon">🏆</div>
+        <div><div class="acard-title" style="color:var(--gold2);">Award-Winning School</div><div class="acard-desc" style="color:rgba(255,255,255,0.4)">Recognised as Best CBSE School in the District for 5 consecutive years.</div></div>
+      </div>
+      <div class="acard"><div class="acard-icon">🔬</div><div class="acard-title">Modern Labs</div><div class="acard-desc">Physics, Chemistry, Biology & Computer labs with latest equipment.</div></div>
+      <div class="acard"><div class="acard-icon">⚽</div><div class="acard-title">Sports Excellence</div><div class="acard-desc">Dedicated grounds, pools, courts, and certified coaches.</div></div>
+      <div class="acard"><div class="acard-icon">🎭</div><div class="acard-title">Arts & Culture</div><div class="acard-desc">Music, dance, drama, and visual arts — every talent nurtured.</div></div>
+    </div>
+  </section>
+
+  <section class="programs reveal">
+    <div class="section-eyebrow">Academic Programs</div>
+    <div class="section-h">Programs We Offer<br><span>for Every Stage of Learning</span></div>
+    <div class="programs-grid">
+      <div class="prog-card">
+        <div class="prog-img-wrap"><div class="prog-img" style="background:linear-gradient(135deg,#FFF5CC,#FFE480);">🌱</div></div>
+        <div class="prog-body">
+          <div class="prog-level" style="color:var(--green2);">Classes I – V</div>
+          <div class="prog-title">Primary School</div>
+          <div class="prog-desc">A joyful foundation in literacy, numeracy, and life skills. Play-based and activity-driven learning for young minds.</div>
+          <div class="prog-meta"><span class="pmeta">Ages 6–10</span><span class="pmeta">Activity-Based</span><span class="pmeta">Holistic</span></div>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-img-wrap"><div class="prog-img" style="background:linear-gradient(135deg,#E8F4FF,#C2DCFF);">📚</div></div>
+        <div class="prog-body">
+          <div class="prog-level" style="color:var(--blue);">Classes VI – VIII</div>
+          <div class="prog-title">Middle School</div>
+          <div class="prog-desc">Deepening conceptual understanding in sciences, humanities, and mathematics with project-based learning.</div>
+          <div class="prog-meta"><span class="pmeta">Ages 11–13</span><span class="pmeta">Project-Based</span><span class="pmeta">STEM Focus</span></div>
+        </div>
+      </div>
+      <div class="prog-card">
+        <div class="prog-img-wrap"><div class="prog-img" style="background:linear-gradient(135deg,#FFF0E8,#FFCCA8);">🎯</div></div>
+        <div class="prog-body">
+          <div class="prog-level" style="color:var(--red);">Classes IX – XII</div>
+          <div class="prog-title">Senior Secondary</div>
+          <div class="prog-desc">Rigorous CBSE board preparation with Science, Commerce & Humanities streams. 100% career counselling.</div>
+          <div class="prog-meta"><span class="pmeta">Ages 14–18</span><span class="pmeta">CBSE Board</span><span class="pmeta">3 Streams</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="events-section reveal">
+    <div style="padding:0 0 0 0;">
+      <div class="section-eyebrow">School Events</div>
+      <div class="section-h">Upcoming <span>Events &<br>Activities</span></div>
+    </div>
+    <div class="events-grid">
+      <div class="event-list">
+        <div class="event-item">
+          <div class="event-date-box"><div class="ed-day">12</div><div class="ed-mon">Apr</div></div>
+          <div class="event-info"><h4>Parent-Teacher Meeting</h4><p>Progress review for all classes · Main Hall · 9:00 AM – 1:00 PM</p><span class="event-tag" style="background:rgba(26,77,194,0.1);color:var(--blue);">Academic</span></div>
+        </div>
+        <div class="event-item">
+          <div class="event-date-box" style="background:var(--gold);"><div class="ed-day">20</div><div class="ed-mon">Apr</div></div>
+          <div class="event-info"><h4>Scholarship Entrance Exam</h4><p>For Classes VI, IX entry · Exam Hall · Registration closes Apr 15</p><span class="event-tag" style="background:rgba(212,160,23,0.1);color:var(--gold);">Admission</span></div>
+        </div>
+        <div class="event-item">
+          <div class="event-date-box" style="background:var(--green);"><div class="ed-day">15</div><div class="ed-mon">May</div></div>
+          <div class="event-info"><h4>Annual Sports Day</h4><p>Track & field, team sports, prize ceremony · Main Ground · All day</p><span class="event-tag" style="background:rgba(46,125,82,0.1);color:var(--green2);">Sports</span></div>
+        </div>
+        <div class="event-item">
+          <div class="event-date-box" style="background:#8B5CF6;"><div class="ed-day">22</div><div class="ed-mon">May</div></div>
+          <div class="event-info"><h4>Annual Day & Cultural Fest</h4><p>Drama, dance, music showcase · Auditorium · Evening 5:00 PM</p><span class="event-tag" style="background:rgba(139,92,246,0.1);color:#8B5CF6;">Cultural</span></div>
+        </div>
+      </div>
+      <div class="events-highlight">
+        <div class="eh-label">🌟 Spotlight Event</div>
+        <div class="eh-title">Annual Day &<br>Cultural Festival 2025</div>
+        <div class="eh-desc">Join us for a spectacular evening celebrating our students' artistic talents — drama, classical dance, western music, and prize distribution.</div>
+        <div class="eh-countdown" id="countdown">
+          <div class="ehc-item"><div class="ehc-num" id="cd-days">47</div><div class="ehc-lbl">Days</div></div>
+          <div class="ehc-item"><div class="ehc-num" id="cd-hours">12</div><div class="ehc-lbl">Hours</div></div>
+          <div class="ehc-item"><div class="ehc-num" id="cd-mins">35</div><div class="ehc-lbl">Mins</div></div>
+          <div class="ehc-item"><div class="ehc-num" id="cd-secs">00</div><div class="ehc-lbl">Secs</div></div>
+        </div>
+        <button class="btn-gold" style="width:100%;justify-content:center;" onclick="showPage('contact')">Register Your Spot →</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="gallery reveal">
+    <div class="section-eyebrow">Campus Life</div>
+    <div class="section-h">A Glimpse of <span>Our World</span></div>
+    <div class="gallery-grid">
+      <div class="gitem span2" style="background:linear-gradient(135deg,#E8F4FF,#C2DCFF);">🏫</div>
+      <div class="gitem" style="background:linear-gradient(135deg,#FFF5CC,#FFE480);">🔬</div>
+      <div class="gitem" style="background:linear-gradient(135deg,#E8FFE8,#C2FFC2);">🏃</div>
+      <div class="gitem" style="background:linear-gradient(135deg,#FFE8F0,#FFC2D4);">🎭</div>
+      <div class="gitem span2" style="background:linear-gradient(135deg,#F0E8FF,#D4C2FF);">🎵</div>
+    </div>
+    <div style="text-align:center;margin-top:32px;">
+      <button class="btn-outline" onclick="showPage('gallery')">View Full Gallery →</button>
+    </div>
+  </section>
+
+  <section class="testimonials reveal">
+    <div style="padding:0 0 0 0;">
+      <div class="section-eyebrow" style="color:var(--gold2);">Testimonials</div>
+      <div class="section-h" style="color:white;">What Families <span style="color:var(--muted);">Say About Us</span></div>
+    </div>
+    <div class="testi-track-wrap">
+      <div class="testi-track" id="testi-track">
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"Bright Valley has been transformative for my daughter. The teachers genuinely care, and the facilities are world-class. Best decision we ever made."</div><div class="testi-author"><div class="testi-av" style="background:var(--blue)">SK</div><div><div class="testi-name">Sunita Kapoor</div><div class="testi-role">Parent of Class X student</div></div></div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"The school's approach to holistic development is outstanding. My son secured admission to IIT after years of guidance here. Truly exceptional mentors."</div><div class="testi-author"><div class="testi-av" style="background:var(--green)">RG</div><div><div class="testi-name">Rahul Gupta</div><div class="testi-role">Alumni parent</div></div></div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"The extracurricular opportunities are unmatched. My children excel in both academics and sports, which is rare to find in one institution."</div><div class="testi-author"><div class="testi-av" style="background:var(--gold)">PM</div><div><div class="testi-name">Priya Mehta</div><div class="testi-role">Parent of two students</div></div></div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"I studied here from Class 1 to 12. The values I learned shaped my career and character. Proud Bright Valley alumnus!"</div><div class="testi-author"><div class="testi-av" style="background:#8B5CF6">AV</div><div><div class="testi-name">Arjun Verma</div><div class="testi-role">Alumnus, IIT Delhi</div></div></div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"Bright Valley has been transformative for my daughter. The teachers genuinely care, and the facilities are world-class. Best decision we ever made."</div><div class="testi-author"><div class="testi-av" style="background:var(--blue)">SK</div><div><div class="testi-name">Sunita Kapoor</div><div class="testi-role">Parent of Class X student</div></div></div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"The school's approach to holistic development is outstanding. My son secured admission to IIT after years of guidance here. Truly exceptional mentors."</div><div class="testi-author"><div class="testi-av" style="background:var(--green)">RG</div><div><div class="testi-name">Rahul Gupta</div><div class="testi-role">Alumni parent</div></div></div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"The extracurricular opportunities are unmatched. My children excel in both academics and sports, which is rare to find in one institution."</div><div class="testi-author"><div class="testi-av" style="background:var(--gold)">PM</div><div><div class="testi-name">Priya Mehta</div><div class="testi-role">Parent of two students</div></div></div></div>
+        <div class="testi-card"><div class="testi-stars">★★★★★</div><div class="testi-text">"I studied here from Class 1 to 12. The values I learned shaped my career and character. Proud Bright Valley alumnus!"</div><div class="testi-author"><div class="testi-av" style="background:#8B5CF6">AV</div><div><div class="testi-name">Arjun Verma</div><div class="testi-role">Alumnus, IIT Delhi</div></div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="cta-band reveal">
+    <h2>Begin Your Child's Journey<br>With Us Today.</h2>
+    <p>Applications for Academic Year 2025–26 are now open. Seats are limited — secure your child's future at Bright Valley School.</p>
+    <button class="btn-gold" onclick="showPage('admissions')">Apply for Admission →</button>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Bright <span>Valley</span> School</div><div class="footer-brand-tag">CBSE Affiliated · Est. 1998</div><div class="footer-brand-desc">Shaping young minds and building futures through excellence in education, character, and community.</div></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li onclick="showPage('home')">Home</li><li onclick="showPage('academics')">Academics</li><li onclick="showPage('admissions')">Admissions</li><li onclick="showPage('gallery')">Gallery</li><li onclick="showPage('contact')">Contact Us</li></ul></div>
+      <div class="footer-col"><h4>Programs</h4><ul><li>Primary School</li><li>Middle School</li><li>Senior Secondary</li><li>Science Stream</li><li>Commerce Stream</li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul><li>info@brightvalley.edu.in</li><li>+91-11-2345-6789</li><li>12 Knowledge Park, Sector 14</li><li>New Delhi - 110001</li></ul></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Bright Valley School. All rights reserved.</div>
+      <div class="footer-accred"><span class="accred-pill">CBSE</span><span class="accred-pill">ISO 9001</span><span class="accred-pill">NAAC A+</span></div>
+    </div>
+  </footer>
+</div>
+
+<!-- ═══════════ ACADEMICS ═══════════ -->
+<div id="page-academics" class="page">
+  <section class="academics-hero">
+    <div class="section-eyebrow">Academics</div>
+    <h1>Education That<br><em>Goes Beyond</em><br>Textbooks.</h1>
+    <p>A comprehensive CBSE curriculum enriched with STEM, arts, sports, and life-skills — preparing students for college, careers, and a changing world.</p>
+  </section>
+
+  <section class="curriculum-section">
+    <div class="section-eyebrow">Curriculum</div>
+    <div class="section-h" style="margin-bottom:0;">Our Subjects</div>
+    <div class="curr-tabs">
+      <div class="curr-tab active" onclick="switchCurr('primary',this)">Primary (I–V)</div>
+      <div class="curr-tab" onclick="switchCurr('middle',this)">Middle (VI–VIII)</div>
+      <div class="curr-tab" onclick="switchCurr('senior',this)">Senior (IX–XII)</div>
+    </div>
+    <div class="curr-panel active" id="curr-primary">
+      <div class="subj-card"><div class="subj-icon">📖</div><div class="subj-name">English Language</div><div class="subj-desc">Reading, writing, grammar, and creative expression through stories and projects.</div></div>
+      <div class="subj-card"><div class="subj-icon">🔢</div><div class="subj-name">Mathematics</div><div class="subj-desc">Number sense, operations, geometry through hands-on manipulatives and puzzles.</div></div>
+      <div class="subj-card"><div class="subj-icon">🌿</div><div class="subj-name">Environmental Studies</div><div class="subj-desc">Exploring nature, community, and science through field visits and experiments.</div></div>
+      <div class="subj-card"><div class="subj-icon">🎨</div><div class="subj-name">Art & Craft</div><div class="subj-desc">Creative expression through drawing, painting, pottery, and craft activities.</div></div>
+      <div class="subj-card"><div class="subj-icon">🎵</div><div class="subj-name">Music</div><div class="subj-desc">Indian classical music, rhythm, and singing — developing musical sensibility early.</div></div>
+      <div class="subj-card"><div class="subj-icon">💻</div><div class="subj-name">Computer Basics</div><div class="subj-desc">Introduction to computing, typing, and digital literacy from Class III onwards.</div></div>
+    </div>
+    <div class="curr-panel" id="curr-middle">
+      <div class="subj-card"><div class="subj-icon">⚗️</div><div class="subj-name">Science</div><div class="subj-desc">Physics, Chemistry, and Biology with regular lab practicals and science fair projects.</div></div>
+      <div class="subj-card"><div class="subj-icon">📐</div><div class="subj-name">Mathematics</div><div class="subj-desc">Algebra, geometry, statistics, and mathematical reasoning for competitive exams.</div></div>
+      <div class="subj-card"><div class="subj-icon">🌍</div><div class="subj-name">Social Science</div><div class="subj-desc">History, Geography, Civics, and Economics with map work and current affairs.</div></div>
+      <div class="subj-card"><div class="subj-icon">📝</div><div class="subj-name">English Literature</div><div class="subj-desc">Prose, poetry, grammar, and creative writing — NCERT plus curated supplementary readers.</div></div>
+      <div class="subj-card"><div class="subj-icon">🇮🇳</div><div class="subj-name">Hindi / Sanskrit</div><div class="subj-desc">Language proficiency, literature appreciation, and cultural heritage exploration.</div></div>
+      <div class="subj-card"><div class="subj-icon">💻</div><div class="subj-name">Computer Science</div><div class="subj-desc">Python programming basics, web fundamentals, and digital citizenship.</div></div>
+    </div>
+    <div class="curr-panel" id="curr-senior">
+      <div class="subj-card"><div class="subj-icon">🔭</div><div class="subj-name">Physics (XI–XII)</div><div class="subj-desc">Advanced mechanics, optics, electromagnetism with full CBSE board preparation.</div></div>
+      <div class="subj-card"><div class="subj-icon">🧪</div><div class="subj-name">Chemistry (XI–XII)</div><div class="subj-desc">Organic, inorganic, and physical chemistry with daily lab sessions.</div></div>
+      <div class="subj-card"><div class="subj-icon">🧬</div><div class="subj-name">Biology (XI–XII)</div><div class="subj-desc">Cell biology, genetics, ecology — with full NEET preparation support.</div></div>
+      <div class="subj-card"><div class="subj-icon">📊</div><div class="subj-name">Accountancy & Business</div><div class="subj-desc">Commerce stream covering accountancy, business studies, and economics.</div></div>
+      <div class="subj-card"><div class="subj-icon">🖥️</div><div class="subj-name">Computer Science</div><div class="subj-desc">Advanced Python, data structures, databases, and networking concepts.</div></div>
+      <div class="subj-card"><div class="subj-icon">📈</div><div class="subj-name">Mathematics (XI–XII)</div><div class="subj-desc">Calculus, vectors, probability — rigorous JEE-level preparation included.</div></div>
+    </div>
+  </section>
+
+  <section class="faculties-section">
+    <div class="section-eyebrow">Our Faculty</div>
+    <div class="section-h">Meet Our <span>Educators</span></div>
+    <div class="faculty-grid">
+      <div class="faculty-card"><div class="faculty-av" style="background:linear-gradient(135deg,#EEF4FF,#C2DCFF);">👩‍🏫</div><div class="faculty-info"><div class="faculty-name">Dr. Anita Sharma</div><div class="faculty-dept">Head of Science Dept.</div><div class="faculty-exp">Ph.D. Physics · 18 years exp.</div></div></div>
+      <div class="faculty-card"><div class="faculty-av" style="background:linear-gradient(135deg,#FFF5CC,#FFE480);">👨‍🏫</div><div class="faculty-info"><div class="faculty-name">Mr. Ramesh Tiwari</div><div class="faculty-dept">Head of Mathematics</div><div class="faculty-exp">M.Sc. Mathematics · 22 years exp.</div></div></div>
+      <div class="faculty-card"><div class="faculty-av" style="background:linear-gradient(135deg,#E8FFE8,#C2FFC2);">👩‍💻</div><div class="faculty-info"><div class="faculty-name">Ms. Kavita Nair</div><div class="faculty-dept">Computer Science</div><div class="faculty-exp">M.Tech CS · 12 years exp.</div></div></div>
+      <div class="faculty-card"><div class="faculty-av" style="background:linear-gradient(135deg,#FFE8F0,#FFC2D4);">👨‍🎨</div><div class="faculty-info"><div class="faculty-name">Mr. Suresh Patel</div><div class="faculty-dept">Arts & Culture</div><div class="faculty-exp">BFA, MFA · 15 years exp.</div></div></div>
+    </div>
+  </section>
+
+  <section class="results-section">
+    <div class="section-eyebrow" style="color:var(--gold2);">Academic Results</div>
+    <div class="section-h" style="color:white;margin-bottom:0;">Board Results <span style="color:rgba(255,255,255,0.25)">2023–24</span></div>
+    <div class="results-grid">
+      <div class="result-bars">
+        <div class="rbar-item"><div class="rbar-head"><span class="rbar-subject">Mathematics</span><span class="rbar-pct">96%</span></div><div class="rbar-track"><div class="rbar-fill" style="width:96%"></div></div></div>
+        <div class="rbar-item"><div class="rbar-head"><span class="rbar-subject">Science</span><span class="rbar-pct">94%</span></div><div class="rbar-track"><div class="rbar-fill" style="width:94%"></div></div></div>
+        <div class="rbar-item"><div class="rbar-head"><span class="rbar-subject">English</span><span class="rbar-pct">98%</span></div><div class="rbar-track"><div class="rbar-fill" style="width:98%"></div></div></div>
+        <div class="rbar-item"><div class="rbar-head"><span class="rbar-subject">Social Science</span><span class="rbar-pct">97%</span></div><div class="rbar-track"><div class="rbar-fill" style="width:97%"></div></div></div>
+        <div class="rbar-item"><div class="rbar-head"><span class="rbar-subject">Computer Science</span><span class="rbar-pct">99%</span></div><div class="rbar-track"><div class="rbar-fill" style="width:99%"></div></div></div>
+      </div>
+      <div class="result-stats">
+        <div class="rs-card"><div class="rs-num">98%</div><div class="rs-lbl">Overall Pass Rate</div></div>
+        <div class="rs-card"><div class="rs-num">42</div><div class="rs-lbl">Students Scored 95%+</div></div>
+        <div class="rs-card"><div class="rs-num">8</div><div class="rs-lbl">District Toppers</div></div>
+        <div class="rs-card"><div class="rs-num">100%</div><div class="rs-lbl">Science Students IIT/NEET Qualified</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Bright <span>Valley</span> School</div><div class="footer-brand-tag">CBSE Affiliated · Est. 1998</div><div class="footer-brand-desc">Shaping young minds and building futures through excellence in education.</div></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li onclick="showPage('home')">Home</li><li onclick="showPage('academics')">Academics</li><li onclick="showPage('admissions')">Admissions</li><li onclick="showPage('contact')">Contact</li></ul></div>
+      <div class="footer-col"><h4>Programs</h4><ul><li>Primary School</li><li>Middle School</li><li>Senior Secondary</li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul><li>info@brightvalley.edu.in</li><li>+91-11-2345-6789</li><li>New Delhi - 110001</li></ul></div>
+    </div>
+    <div class="footer-bottom"><div class="footer-copy">© 2025 Bright Valley School.</div><div class="footer-accred"><span class="accred-pill">CBSE</span><span class="accred-pill">ISO 9001</span></div></div>
+  </footer>
+</div>
+
+<!-- ═══════════ ADMISSIONS ═══════════ -->
+<div id="page-admissions" class="page">
+  <section class="admissions-hero">
+    <div class="section-eyebrow" style="color:var(--gold2);">Admissions 2025–26</div>
+    <h1>Join the Bright<br><em>Valley</em> Family.</h1>
+    <p>We welcome students who are curious, motivated, and ready to grow. Admissions are now open for all classes. Apply early — seats are limited.</p>
+    <div style="margin-top:28px;display:flex;gap:16px;flex-wrap:wrap;">
+      <div style="background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">📋</span>
+        <div><div style="font-size:11px;color:rgba(255,255,255,0.4);letter-spacing:0.06em;text-transform:uppercase;">Application Open</div><div style="font-family:var(--font);font-size:15px;font-weight:700;color:white;">April 1 – June 30, 2025</div></div>
+      </div>
+      <div style="background:rgba(212,160,23,0.1);border:1px solid rgba(240,186,48,0.25);border-radius:12px;padding:14px 20px;display:flex;align-items:center;gap:10px;">
+        <span style="font-size:20px;">🎓</span>
+        <div><div style="font-size:11px;color:var(--gold2);letter-spacing:0.06em;text-transform:uppercase;">Classes Available</div><div style="font-family:var(--font);font-size:15px;font-weight:700;color:white;">Nursery to Class XII</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="process-section">
+    <div class="section-eyebrow">Admission Process</div>
+    <div class="section-h">Simple 4-Step <span>Application Process</span></div>
+    <div class="process-steps">
+      <div class="step-card"><div class="step-num">1</div><div class="step-title">Fill Application</div><div class="step-desc">Complete the online or offline application form with required details and documents.</div></div>
+      <div class="step-card"><div class="step-num" style="border-color:var(--gold);">2</div><div class="step-title">Document Verification</div><div class="step-desc">Submit birth certificate, previous marksheets, address proof, and passport photos.</div></div>
+      <div class="step-card"><div class="step-num" style="border-color:var(--green);">3</div><div class="step-title">Entrance Assessment</div><div class="step-desc">A friendly interaction/test for the child. Classes VI and above take a short written test.</div></div>
+      <div class="step-card"><div class="step-num" style="border-color:#8B5CF6;">4</div><div class="step-title">Confirmation & Fees</div><div class="step-desc">Receive admission letter, pay fees, and collect your welcome kit. Welcome to the family!</div></div>
+    </div>
+  </section>
+
+  <section class="fees-section">
+    <div class="section-eyebrow">Fee Structure</div>
+    <div class="section-h">Transparent, Affordable <span>Fee Plans</span></div>
+    <div class="fees-grid">
+      <div class="fee-card"><div class="fee-level" style="color:var(--green2)">Primary</div><div class="fee-name">Classes I – V</div><div class="fee-desc">Building strong foundations</div><div class="fee-amount">₹42,000</div><div class="fee-period">Per academic year</div><ul class="fee-list"><li>Smart classroom access</li><li>Library & computer lab</li><li>All extracurricular activities</li><li>Annual day & sports day</li></ul></div>
+      <div class="fee-card featured"><div class="fee-level">Most Popular</div><div class="fee-name" style="color:var(--gold2)">Classes VI–X</div><div class="fee-desc" style="color:rgba(255,255,255,0.5)">Comprehensive CBSE education</div><div class="fee-amount">₹58,000</div><div class="fee-period" style="color:rgba(255,255,255,0.4)">Per academic year</div><ul class="fee-list"><li>All Primary inclusions</li><li>Science & computer labs</li><li>Board exam preparation</li><li>Career counselling sessions</li></ul></div>
+      <div class="fee-card"><div class="fee-level" style="color:var(--red)">Senior Secondary</div><div class="fee-name">Classes XI – XII</div><div class="fee-desc">Board & entrance preparation</div><div class="fee-amount">₹72,000</div><div class="fee-period">Per academic year</div><ul class="fee-list"><li>All previous inclusions</li><li>JEE / NEET prep classes</li><li>Industry expert sessions</li><li>Placement & college guidance</li></ul></div>
+    </div>
+  </section>
+
+  <section class="apply-form">
+    <div class="apply-grid">
+      <div class="apply-info">
+        <div class="section-eyebrow">Apply Now</div>
+        <h2>Ready to Begin?<br>Let's Get Started.</h2>
+        <p>Fill out the enquiry form and our admissions team will reach out within 24 hours to guide you through the process.</p>
+        <p>Alternatively, visit us in person at our campus from Monday to Saturday, 9 AM to 4 PM.</p>
+        <div class="apply-checklist">
+          <div class="ac-item"><div class="ac-check"></div>Birth Certificate (photocopy)</div>
+          <div class="ac-item"><div class="ac-check"></div>Previous school marksheet / report card</div>
+          <div class="ac-item"><div class="ac-check"></div>Aadhaar card (student + guardian)</div>
+          <div class="ac-item"><div class="ac-check"></div>4 passport-size photographs</div>
+          <div class="ac-item"><div class="ac-check"></div>Residence proof (utility bill / rent agreement)</div>
+          <div class="ac-item"><div class="ac-check"></div>Transfer certificate (for Class II and above)</div>
+        </div>
+      </div>
+      <div class="form-card">
+        <h3>Admission Enquiry</h3>
+        <p>We'll respond within 24 hours.</p>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Parent Name</label><input class="form-input" type="text" placeholder="Full name"/></div>
+          <div class="form-group"><label class="form-label">Student Name</label><input class="form-input" type="text" placeholder="Child's name"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" placeholder="+91 98XXX XXXXX"/></div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="you@email.com"/></div>
+        </div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Class Applying For</label><select class="form-input"><option>Select class</option><option>Nursery / KG</option><option>Class I–V</option><option>Class VI–X</option><option>Class XI–XII</option></select></div>
+          <div class="form-group"><label class="form-label">Academic Year</label><select class="form-input"><option>2025–26</option><option>2026–27</option></select></div>
+        </div>
+        <div class="form-group"><label class="form-label">Message (Optional)</label><textarea class="form-input" placeholder="Any questions or specific requirements?"></textarea></div>
+        <button class="form-submit">Submit Enquiry →</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Bright <span>Valley</span> School</div><div class="footer-brand-tag">CBSE Affiliated · Est. 1998</div><div class="footer-brand-desc">Shaping young minds and building futures through excellence in education.</div></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li onclick="showPage('home')">Home</li><li onclick="showPage('academics')">Academics</li><li onclick="showPage('admissions')">Admissions</li><li onclick="showPage('contact')">Contact</li></ul></div>
+      <div class="footer-col"><h4>Programs</h4><ul><li>Primary School</li><li>Middle School</li><li>Senior Secondary</li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul><li>info@brightvalley.edu.in</li><li>+91-11-2345-6789</li><li>New Delhi - 110001</li></ul></div>
+    </div>
+    <div class="footer-bottom"><div class="footer-copy">© 2025 Bright Valley School.</div><div class="footer-accred"><span class="accred-pill">CBSE</span><span class="accred-pill">ISO 9001</span></div></div>
+  </footer>
+</div>
+
+<!-- ═══════════ GALLERY ═══════════ -->
+<div id="page-gallery" class="page">
+  <section class="gallery-hero">
+    <div class="section-eyebrow">Gallery</div>
+    <h1>Life at<br>Bright Valley.</h1>
+    <p style="font-size:15px;color:var(--muted);max-width:500px;margin-top:12px;">A visual journey through our classrooms, labs, sporting events, cultural programmes, and campus life.</p>
+    <div class="gallery-filter">
+      <div class="gf-btn active" onclick="filterGallery(this,'all')">All</div>
+      <div class="gf-btn" onclick="filterGallery(this,'academics')">Academics</div>
+      <div class="gf-btn" onclick="filterGallery(this,'sports')">Sports</div>
+      <div class="gf-btn" onclick="filterGallery(this,'cultural')">Cultural</div>
+      <div class="gf-btn" onclick="filterGallery(this,'campus')">Campus</div>
+    </div>
+  </section>
+
+  <div class="full-gallery" id="full-gallery">
+    <div class="fg-item" data-cat="campus" style="background:linear-gradient(135deg,#E8F4FF,#C2DCFF);">🏫<div class="fg-overlay"><div><div class="fg-caption">School Building</div><div class="fg-sub">Main Campus, Block A</div></div></div></div>
+    <div class="fg-item" data-cat="academics" style="background:linear-gradient(135deg,#FFF5CC,#FFE480);">🔬<div class="fg-overlay"><div><div class="fg-caption">Science Laboratory</div><div class="fg-sub">Chemistry Lab, Ground Floor</div></div></div></div>
+    <div class="fg-item" data-cat="sports" style="background:linear-gradient(135deg,#E8FFE8,#C2FFC2);">🏃<div class="fg-overlay"><div><div class="fg-caption">Annual Sports Day</div><div class="fg-sub">Track & Field Events 2024</div></div></div></div>
+    <div class="fg-item" data-cat="cultural" style="background:linear-gradient(135deg,#FFE8F0,#FFC2D4);">🎭<div class="fg-overlay"><div><div class="fg-caption">Annual Day Drama</div><div class="fg-sub">Class X Performance 2024</div></div></div></div>
+    <div class="fg-item" data-cat="academics" style="background:linear-gradient(135deg,#F0F0FF,#D4D4FF);">💻<div class="fg-overlay"><div><div class="fg-caption">Computer Laboratory</div><div class="fg-sub">45-station smart lab</div></div></div></div>
+    <div class="fg-item" data-cat="cultural" style="background:linear-gradient(135deg,#F0E8FF,#D4C2FF);">🎵<div class="fg-overlay"><div><div class="fg-caption">Music Room</div><div class="fg-sub">Classical & Western music</div></div></div></div>
+    <div class="fg-item" data-cat="sports" style="background:linear-gradient(135deg,#E8FFF0,#C2FFD4);">⚽<div class="fg-overlay"><div><div class="fg-caption">Football Ground</div><div class="fg-sub">Inter-school tournament 2024</div></div></div></div>
+    <div class="fg-item" data-cat="campus" style="background:linear-gradient(135deg,#FFF8E8,#FFE8B2);">📚<div class="fg-overlay"><div><div class="fg-caption">Digital Library</div><div class="fg-sub">10,000+ books + e-resources</div></div></div></div>
+    <div class="fg-item" data-cat="academics" style="background:linear-gradient(135deg,#E8F8FF,#B2E0FF);">🧬<div class="fg-overlay"><div><div class="fg-caption">Biology Lab</div><div class="fg-sub">Microscopy & specimen study</div></div></div></div>
+    <div class="fg-item" data-cat="cultural" style="background:linear-gradient(135deg,#FFF0FF,#F4C2FF);">🎨<div class="fg-overlay"><div><div class="fg-caption">Art Exhibition</div><div class="fg-sub">Student artwork showcase 2024</div></div></div></div>
+    <div class="fg-item" data-cat="sports" style="background:linear-gradient(135deg,#FFEFE8,#FFCEB2);">🏊<div class="fg-overlay"><div><div class="fg-caption">Swimming Pool</div><div class="fg-sub">Olympic-size pool, heated</div></div></div></div>
+    <div class="fg-item" data-cat="campus" style="background:linear-gradient(135deg,#E8FFEE,#B2FFD0);">🌳<div class="fg-overlay"><div><div class="fg-caption">Green Campus</div><div class="fg-sub">8-acre eco-friendly campus</div></div></div></div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Bright <span>Valley</span> School</div><div class="footer-brand-tag">CBSE Affiliated · Est. 1998</div><div class="footer-brand-desc">Shaping young minds through excellence in education.</div></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li onclick="showPage('home')">Home</li><li onclick="showPage('academics')">Academics</li><li onclick="showPage('admissions')">Admissions</li><li onclick="showPage('contact')">Contact</li></ul></div>
+      <div class="footer-col"><h4>Programs</h4><ul><li>Primary School</li><li>Middle School</li><li>Senior Secondary</li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul><li>info@brightvalley.edu.in</li><li>+91-11-2345-6789</li><li>New Delhi - 110001</li></ul></div>
+    </div>
+    <div class="footer-bottom"><div class="footer-copy">© 2025 Bright Valley School.</div><div class="footer-accred"><span class="accred-pill">CBSE</span><span class="accred-pill">ISO 9001</span></div></div>
+  </footer>
+</div>
+
+<!-- ═══════════ CONTACT ═══════════ -->
+<div id="page-contact" class="page">
+  <div class="contact-layout">
+    <div class="contact-left">
+      <div>
+        <div class="section-eyebrow" style="color:var(--gold2);margin-bottom:16px;">Contact Us</div>
+        <h1>We'd Love to<br><em>Hear From</em><br>You.</h1>
+        <p style="margin-top:16px;">Whether it's an admissions query, a parent concern, or you'd just like to visit campus — our team is always here to help.</p>
+        <div class="contact-info-list">
+          <div class="ci-item"><div class="ci-icon">📞</div><div><div class="ci-label">Phone</div><div class="ci-val">+91-11-2345-6789<br>+91-98XXX-XXXXX (WhatsApp)</div></div></div>
+          <div class="ci-item"><div class="ci-icon">✉️</div><div><div class="ci-label">Email</div><div class="ci-val">info@brightvalley.edu.in<br>admissions@brightvalley.edu.in</div></div></div>
+          <div class="ci-item"><div class="ci-icon">📍</div><div><div class="ci-label">Address</div><div class="ci-val">12 Knowledge Park, Sector 14<br>New Delhi — 110001</div></div></div>
+          <div class="ci-item"><div class="ci-icon">🕐</div><div><div class="ci-label">Office Hours</div><div class="ci-val">Monday – Saturday<br>8:00 AM – 5:00 PM</div></div></div>
+        </div>
+      </div>
+      <div class="map-placeholder">
+        📍
+        <div class="map-sub">12 Knowledge Park, Sector 14, New Delhi</div>
+        <div style="font-size:11px;color:rgba(255,255,255,0.2);margin-top:4px;">Near Metro Station · 10 min from NDMC</div>
+      </div>
+    </div>
+    <div class="contact-right">
+      <h2>Send Us a Message</h2>
+      <p>We respond to all messages within one business day.</p>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Your Name</label><input class="form-input" type="text" placeholder="Full name"/></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-input" type="tel" placeholder="+91 XXXXX XXXXX"/></div>
+      </div>
+      <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" placeholder="you@email.com"/></div>
+      <div class="form-group"><label class="form-label">Subject</label><select class="form-input"><option>Admission Enquiry</option><option>Fee Related Query</option><option>Academic Matter</option><option>General Query</option><option>Feedback / Suggestion</option><option>Complaint</option></select></div>
+      <div class="form-group"><label class="form-label">Message</label><textarea class="form-input" placeholder="How can we help you today?"></textarea></div>
+      <button class="form-submit">Send Message →</button>
+      <div style="margin-top:20px;padding:16px;background:var(--warm);border-radius:12px;display:flex;gap:12px;align-items:center;">
+        <span style="font-size:24px;">💬</span>
+        <div><div style="font-size:13px;font-weight:600;color:var(--navy);margin-bottom:2px;">WhatsApp Us</div><div style="font-size:12px;color:var(--muted);">Quick responses on +91-98XXX-XXXXX (Mon–Sat)</div></div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer-grid">
+      <div><div class="footer-brand-name">Bright <span>Valley</span> School</div><div class="footer-brand-tag">CBSE Affiliated · Est. 1998</div><div class="footer-brand-desc">Shaping young minds and building futures through excellence in education.</div></div>
+      <div class="footer-col"><h4>Quick Links</h4><ul><li onclick="showPage('home')">Home</li><li onclick="showPage('academics')">Academics</li><li onclick="showPage('admissions')">Admissions</li><li onclick="showPage('gallery')">Gallery</li></ul></div>
+      <div class="footer-col"><h4>Programs</h4><ul><li>Primary School</li><li>Middle School</li><li>Senior Secondary</li></ul></div>
+      <div class="footer-col"><h4>Contact</h4><ul><li>info@brightvalley.edu.in</li><li>+91-11-2345-6789</li><li>New Delhi - 110001</li></ul></div>
+    </div>
+    <div class="footer-bottom"><div class="footer-copy">© 2025 Bright Valley School. All rights reserved.</div><div class="footer-accred"><span class="accred-pill">CBSE</span><span class="accred-pill">ISO 9001</span><span class="accred-pill">NAAC A+</span></div></div>
+  </footer>
+</div>
+
+<script>
+/* ── LOADER ── */
+window.addEventListener('load', () => {
+  setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 2000);
+});
+
+/* ── PARTICLES ── */
+const canvas = document.getElementById('particle-canvas');
+const ctx = canvas.getContext('2d');
+let pts = [];
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+resizeCanvas();
+window.addEventListener('resize', resizeCanvas);
+for (let i = 0; i < 50; i++) {
+  pts.push({ x: Math.random() * window.innerWidth, y: Math.random() * window.innerHeight, vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4, r: Math.random() * 2 + 1 });
+}
+function drawParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  pts.forEach((p, i) => {
+    p.x += p.vx; p.y += p.vy;
+    if (p.x < 0) p.x = canvas.width; if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height; if (p.y > canvas.height) p.y = 0;
+    ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(26,77,194,0.15)'; ctx.fill();
+    pts.slice(i + 1).forEach(q => {
+      const d = Math.hypot(p.x - q.x, p.y - q.y);
+      if (d < 100) { ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y); ctx.strokeStyle = `rgba(26,77,194,${0.05 * (1 - d / 100)})`; ctx.lineWidth = 0.5; ctx.stroke(); }
+    });
+  });
+  requestAnimationFrame(drawParticles);
+}
+drawParticles();
+
+/* ── NAV SCROLL ── */
+window.addEventListener('scroll', () => {
+  document.getElementById('main-nav').classList.toggle('scrolled', window.scrollY > 40);
+});
+
+/* ── PAGE NAV ── */
+function showPage(id) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  document.querySelectorAll('.mn-link').forEach(l => l.classList.remove('active'));
+  document.getElementById('page-' + id).classList.add('active');
+  const nl = document.getElementById('nl-' + id);
+  if (nl) nl.classList.add('active');
+  window.scrollTo(0, 0);
+  observeReveal();
+}
+
+/* ── MOBILE MENU ── */
+function toggleMobileMenu() {
+  document.getElementById('mobile-nav').classList.toggle('open');
+}
+
+/* ── CURRICULUM TABS ── */
+function switchCurr(id, btn) {
+  document.querySelectorAll('.curr-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.curr-panel').forEach(p => p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('curr-' + id).classList.add('active');
+}
+
+/* ── GALLERY FILTER ── */
+function filterGallery(btn, cat) {
+  document.querySelectorAll('.gf-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.fg-item').forEach(item => {
+    item.style.display = (cat === 'all' || item.dataset.cat === cat) ? 'flex' : 'none';
+  });
+}
+
+/* ── COUNTDOWN ── */
+function updateCountdown() {
+  const target = new Date('2025-05-22T17:00:00');
+  const now = new Date();
+  const diff = Math.max(0, target - now);
+  const d = Math.floor(diff / 86400000);
+  const h = Math.floor((diff % 86400000) / 3600000);
+  const m = Math.floor((diff % 3600000) / 60000);
+  const s = Math.floor((diff % 60000) / 1000);
+  const cd = document.getElementById('cd-days'); if(cd) cd.textContent = d;
+  const ch = document.getElementById('cd-hours'); if(ch) ch.textContent = String(h).padStart(2,'0');
+  const cm = document.getElementById('cd-mins'); if(cm) cm.textContent = String(m).padStart(2,'0');
+  const cs = document.getElementById('cd-secs'); if(cs) cs.textContent = String(s).padStart(2,'0');
+}
+setInterval(updateCountdown, 1000);
+updateCountdown();
+
+/* ── SCROLL REVEAL ── */
+function observeReveal() {
+  const els = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); } });
+    }, { threshold: 0.15 });
+    els.forEach(el => { el.classList.remove('visible'); obs.observe(el); });
+  } else {
+    els.forEach(el => el.classList.add('visible'));
+  }
+}
+observeReveal();
+
+/* ── HERO FLOATING BADGE PARALLAX ── */
+document.addEventListener('mousemove', (e) => {
+  const mx = (e.clientX / window.innerWidth - 0.5) * 12;
+  const my = (e.clientY / window.innerHeight - 0.5) * 12;
+  const card = document.querySelector('.hero-main-card');
+  if (card) card.style.transform = `perspective(1000px) rotateX(${-my * 0.3}deg) rotateY(${mx * 0.3}deg)`;
+});
+</script>
+</body>
+</html>
