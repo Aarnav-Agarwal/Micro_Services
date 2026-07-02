@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import api from "../../Services/api";
 import "./auth.css";
 import { useNavigate } from "react-router-dom";
 
@@ -16,14 +16,14 @@ function Login(){
     const handleSubmit=async(e)=>{
         e.preventDefault();
         try{
-            const response=await axios.post("http://localhost:8080/api/auth/login",formData);
+            const response=await api.post("/auth/login",formData);
             localStorage.setItem("token",response.data.token);
             localStorage.setItem("user",JSON.stringify(response.data.user));
             alert(response.data.message);
             navigate("/dashboard");
         }catch(err){
             console.log(err);
-            alert(err.response.data.message);
+            alert(err.response?.data?.message || err.message || "An error occurred");
         }
     };
     return(
