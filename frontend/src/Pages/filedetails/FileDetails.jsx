@@ -1,13 +1,16 @@
 import React, { useState, useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import api from "../../Services/api";
 import "./FileDetails.css";
 
 function FileDetails() {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [shareId, setShareId] = useState("");
   const [file, setFile] = useState(null);
   const [sharedUsers, setSharedUsers] = useState([]);
+
+  const loggedInUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   useEffect(() => {
     fetchDetails();
@@ -94,6 +97,20 @@ function FileDetails() {
     }
   };
 
+  const deleteFile = async () => {
+    if (!window.confirm("Are you sure you want to delete this file? This action cannot be undone.")) {
+      return;
+    }
+    try {
+      await api.delete(`/files/${id}`);
+      alert("File deleted successfully");
+      navigate("/dashboard");
+    } catch (error) {
+      console.log(error);
+      alert(error.response?.data || error.message || "Failed to delete file");
+    }
+  };
+
   if (!file) {
     return <h2>Loading file details...</h2>;
   }
@@ -113,6 +130,12 @@ function FileDetails() {
           <button className="downloadBtn" onClick={downloadFile}>
             Download
           </button>
+
+          {file.owner_id === loggedInUser.id && (
+            <button className="deleteBtn" onClick={deleteFile}>
+              Delete File
+            </button>
+          )}
         </div>
 
         <div className="shareSection">
