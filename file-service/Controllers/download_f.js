@@ -1,12 +1,11 @@
 import pool from "../Models/file_db.js";
+import path from "path";
+import fs from "fs";
 
-const find = async (req, res) => {
+const download = async (req, res) => {
     try {
         const { id } = req.params;
-        const result = await pool.query(
-            "SELECT * FROM files WHERE id = $1",
-            [id]
-        );
+        const result = await pool.query("SELECT * FROM files WHERE id = $1", [id]);
 
         if (result.rows.length === 0) {
             return res.status(404).json({
@@ -17,7 +16,7 @@ const find = async (req, res) => {
 
         const file = result.rows[0];
 
-        // Authorization check
+        // Authorization 
         if (file.owner_id !== req.user.id) {
             try {
                 const shareServiceUrl = process.env.SHARE_SERVICE_INTERNAL || 'http://localhost:4003/shares';
@@ -31,35 +30,39 @@ const find = async (req, res) => {
                     if (!isShared) {
                         return res.status(403).json({
                             success: false,
-                            message: "you are not permitted to access the file"
+                            message: "Access Denied"
                         });
                     }
                 } else {
                     return res.status(403).json({
                         success: false,
-                        message: "you are not permitted to access the file"
+                        message: "Access Denied"
                     });
                 }
             } catch (err) {
                 return res.status(403).json({
                     success: false,
-                    message: "you are not permitted to access the file"
+                    message: "Access Denied"
                 });
             }
         }
 
-        return res.status(200).json({
-            success: true,
-            file: file
-        });
+        const resolvedPath = path.resolve(file.stored_path);
+        if (!fs.existsSync(resolvedPath)) {
+            return res.status(404).json({
+                success: false,
+                message: "File physically missing"
+            });
+        }
 
+        return res.download(resolvedPath, file.original_name);
     } catch (err) {
-        console.log(err);
+        console.error("Error downloading file:", err);
         return res.status(500).json({
             success: false,
-            message: "Error fetching file"
+            message: "Error downloading file"
         });
     }
 };
 
-export default find;
+export default download;

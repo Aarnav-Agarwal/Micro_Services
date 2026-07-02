@@ -1,28 +1,3 @@
-// import jwt from "jsonwebtoken";
-
-// const verifyToken = (req, res, next) => {
-//       try {
-//         const token = req.cookies.token;
-//         if (!token) {
-//             return res.status(401).json({
-//                 message: "Unauthorized"
-//             });
-//         }
-//         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-//         req.user = decoded;
-//         next();
-//     } 
-//     catch (error) {
-//         return res.status(401).json({
-//             message: "Invalid token"
-//         });
-//     }
-// };
-
-// export default verifyToken;
-
-
-
 import axios from "axios";
 const authenticate = async (req,res,next) => {
     try {
@@ -33,7 +8,9 @@ const authenticate = async (req,res,next) => {
                 message: "Token missing"
             });
         }
-        const response = await axios.get("http://localhost:4001/auth/me",
+        const authBaseUrl = process.env.AUTH_SERVICE || "http://localhost:4001/auth";
+        const authUrl = authBaseUrl.endsWith("/auth") ? `${authBaseUrl}/me` : `${authBaseUrl}/auth/me`;
+        const response = await axios.get(authUrl,
                 {
                     headers: {authorization: authHeader}
                 }
@@ -47,7 +24,3 @@ const authenticate = async (req,res,next) => {
     }
 };
 export default authenticate;
-
-
-
-

@@ -25,6 +25,7 @@ function Dashboard() {
     }
     return `${(bytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
   };
+
   // for fetching the files from backend
   const fetchFiles = async () => {
     try {
@@ -36,10 +37,12 @@ function Dashboard() {
       console.log(error);
     }
   };
+
   // for accessing the file detail panel
   const handleFileClick = (id) => {
     navigate(`/file/${id}`);
   };
+  
   // function for uploading
   const handleFileChange = async (e) => {
     const file = e.target.files[0];

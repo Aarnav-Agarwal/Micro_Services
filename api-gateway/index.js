@@ -12,21 +12,25 @@ const app = express();
 app.use(cors());
 
 app.use(
-  "/api/auth",                                  //localhost:8080/api/auth  then it routes to localhost:4001/auth 
-  createProxyMiddleware({                       // when process.env.AUTH_SERVICE=http://localhost:4001/auth
-    target: process.env.AUTH_SERVICE,           //if AUTH_SERVICE=http://localhost:4001 then routes o localhost:4001/
-    changeOrigin: true
+  "/api/auth",                                   
+  createProxyMiddleware({                       
+    target: process.env.AUTH_SERVICE,           
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api/auth": ""
+    }
   })
 );
-
-// app.use(express.json());  needed if gateway needs to access the data else it eats up the req format
 
 app.use(
   "/api/files",
   verifyToken,
   createProxyMiddleware({
     target: process.env.FILE_SERVICE,
-    changeOrigin: true
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api/files": ""
+    }
   })
 );
 
@@ -35,7 +39,10 @@ app.use(
   verifyToken,
   createProxyMiddleware({
     target: process.env.SHARE_SERVICE,
-    changeOrigin: true
+    changeOrigin: true,
+    pathRewrite: {
+      "^/api/shares": ""
+    }
   })
 );
 

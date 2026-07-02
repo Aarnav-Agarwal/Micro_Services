@@ -1,68 +1,113 @@
-version: "3.8"
-
 services:
   Databases:
-    image: postgres
+    image: postgres:15
     container_name: Databases
     restart: always
-
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: secret123
-      POSTGRES_DB: auth_db
-
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
-
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
+  auth_service:
+    build: ./auth-service
+    container_name: auth-service
+    restart: always
+    environment:
+      PORT: 4001
+      JWT_SECRET: secret-123
+      DB_HOST: Databases
+      DB_USER: postgres
+      DB_PASSWORD: secret123
+      DB_NAME: auth_db
+    ports:
+      - "4001:4001"
+    depends_on:
+      Databases:
+        condition: service_healthy
 
-  # frontend:
-  #   image: nginx:latest
-  #   container_name: frontend
-  # #   restart: always
+  file_service:
+    build: ./file-service
+    container_name: file-service
+    restart: always
+    environment:
+      PORT: 4002
+      JWT_SECRET: secret-123
+      DB_HOST: Databases
+      DB_USER: postgres
+      DB_PASSWORD: secret123
+      DB_NAME: file_db
+      SHARE_SERVICE_INTERNAL: http://share_service:4003/shares
+    ports:
+      - "4002:4002"
+    volumes:
+      - ./file-service/docs:/app/docs
+    depends_on:
+      Databases:
+        condition: service_healthy
 
+  share_service:
+    build: ./share-service
+    container_name: share-service
+    restart: always
+    environment:
+      PORT: 4003
+      JWT_SECRET: secret-123
+      DB_HOST: Databases
+      DB_USER: postgres
+      DB_PASSWORD: secret123
+      DB_NAME: share_db
+      FILE_SERVICE_INTERNAL: http://file_service:4002/files
+    ports:
+      - "4003:4003"
+    depends_on:
+      Databases:
+        condition: service_healthy
 
+  api_gateway:
+    build: ./api-gateway
+    container_name: api-gateway
+    restart: always
+    environment:
+      PORT: 8080
+      AUTH_SERVICE: http://auth_service:4001/auth
+      FILE_SERVICE: http://file_service:4002/files
+      SHARE_SERVICE: http://share_service:4003/shares
+      JWT_SECRET: secret-123
+    depends_on:
+      - auth_service
+      - file_service
+      - share_service
 
-  # api_gateway:
-  #   build: ./api-gateway
-  #   container_name: api-gateway
-  #   environment:
-  #     PORT: 8080
-  #     AUTH_SERVICE: http://localhost:4001/auth
-  #     FILE_SERVICE: http://localhost:4002/files
-  #     SHARE_SERVICE: http://localhost:4003/shares
-  #     JWT_SECRET: mysecretkey
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: frontend
+    restart: always
+    depends_on:
+      - api_gateway
 
-  # auth_service:
-  #   build: ./auth-service
-  #   container_name: auth-service
-  #   environment:
-  #     PORT: 4001
-  #     JWT_SECRET: secret-123
-
-
-  # file_service:
-  #   build: ./file-service
-  #   container_name: file-service
-  #   environment:
-  #     PORT: 4002
-  #     JWT_SECRET: secret-123
-
-  #   volumes:
-  #     - files:./app/docs
-
-
-  # share_service:
-  #   build: ./share-service
-  #   container_name: share-service
-  #   environment:
-  #     PORT: 4003
-  #     JWT_SECRET: secret-123
-
+  nginx_gateway:
+    image: nginx:alpine
+    container_name: nginx-gateway
+    restart: always
+    ports:
+      - "3000:80"
+    volumes:
+      - ./nginx-gateway.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - frontend
+      - api_gateway
 
 volumes:
   postgres_data:
-  # files:

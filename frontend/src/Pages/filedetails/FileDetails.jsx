@@ -13,6 +13,21 @@ function FileDetails() {
     fetchDetails();
   }, []);
 
+  const formatFileSize = (bytes) => {
+    if (!bytes) return "0 B";
+    const numBytes = parseInt(bytes, 10);
+    if (numBytes < 1024) {
+      return `${numBytes} B`;
+    }
+    if (numBytes < 1024 * 1024) {
+      return `${(numBytes / 1024).toFixed(2)} KB`;
+    }
+    if (numBytes < 1024 * 1024 * 1024) {
+      return `${(numBytes / (1024 * 1024)).toFixed(2)} MB`;
+    }
+    return `${(numBytes / (1024 * 1024 * 1024)).toFixed(2)} GB`;
+  };
+
   const fetchDetails = async () => {
     try {
       const response_a = await api.get(`/files/${id}`);
@@ -29,16 +44,15 @@ function FileDetails() {
         setSharedUsers([]);
       }
     } catch (error) {
-      console.log(error.response.data.message);
+      console.log(error.response?.data?.message || error.message);
     }
   };
 
   const shareFile = async () => {
-    const response_a = await api.get(`/files/${id}`);
-    const o_id = response_a.data.file.owner_id;
-
     if (!shareId.trim()) return;
     try {
+      // Get the owner ID dynamically
+      const o_id = file.owner_id;
       const response = await api.post(`/shares`, {
         file_id: id,
         shared_with_user_id: shareId,
@@ -49,14 +63,14 @@ function FileDetails() {
       fetchDetails();
       setShareId("");
     } catch (error) {
-      alert(error.response.data.message);
+      alert(error.response?.data?.message || error.message);
     }
   };
 
-  const removeAccess = async (userId) => {
+  const removeAccess = async (shareRecordId) => {
     try {
-      await api.delete(`/shares/${userId}`);
-      setSharedUsers(sharedUsers.filter((user) => user.id !== userId));
+      await api.delete(`/shares/${shareRecordId}`);
+      setSharedUsers(sharedUsers.filter((user) => user.id !== shareRecordId));
     } catch (error) {
       console.log(error);
     }
@@ -64,22 +78,24 @@ function FileDetails() {
 
   const downloadFile = async () => {
     try {
-      const response = await api.get(`/files/${id}`, {
+      const response = await api.get(`/files/${id}/download`, {
         responseType: "blob",
       });
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
       link.href = url;
-      link.setAttribute("download", file.filename);
+      link.setAttribute("download", file.original_name);
       document.body.appendChild(link);
       link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     } catch (error) {
       console.log(error);
     }
   };
 
   if (!file) {
-    return <h2>No shares</h2>;
+    return <h2>Loading file details...</h2>;
   }
 
   return (
@@ -90,9 +106,9 @@ function FileDetails() {
 
           <h1>{file.original_name}</h1>
 
-          <p>Size: {file.size}</p>
+          <p>Size: {formatFileSize(file.size_bytes)}</p>
 
-          <p>Uploaded: {file.created_at}</p>
+          <p>Uploaded: {new Date(file.created_at).toLocaleString()}</p>
 
           <button className="downloadBtn" onClick={downloadFile}>
             Download
@@ -115,7 +131,6 @@ function FileDetails() {
             sharedUsers.map((user) => (
               <div className="userCard" key={user.id}>
                 <div>
-                  {/* <strong>{user.name}</strong> */}
                   <p>User_id: {user.shared_with_user_id}</p>
                 </div>
 

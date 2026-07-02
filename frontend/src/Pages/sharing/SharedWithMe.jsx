@@ -15,7 +15,7 @@ function SharedWithMe() {
     try {
       const response = await api.get("/shares/me");
       if (response.data.success) {
-        setFiles(response.data.files);
+        setFiles(response.data.sharedWith);
       }
     } catch (error) {
       console.log(error);
@@ -45,7 +45,7 @@ function SharedWithMe() {
           <div
             key={file.id}
             className="sharedCard"
-            onClick={() => openFile(file.id)}
+            onClick={() => openFile(file.file_id)}
           >
             <div className="sharedIcon">📁</div>
             <div className="sharedInfo">

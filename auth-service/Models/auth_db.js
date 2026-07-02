@@ -1,11 +1,11 @@
 import { Pool } from 'pg';
 
 const pool = new Pool({
-    host: 'localhost',     //auth-db in place of localhost as it is the container name of pg
-    user: 'postgres',
-    port: 5432,
-    password: 'admin123',
-    database: 'auth service'
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'postgres',
+    port: parseInt(process.env.DB_PORT || '5432', 10),
+    password: process.env.DB_PASSWORD || 'secret123',
+    database: process.env.DB_NAME || 'auth_db'
 });
 
 pool.connect()
@@ -16,7 +16,7 @@ pool.connect()
                 id SERIAL PRIMARY KEY,
                 name VARCHAR(100) NOT NULL,
                 email VARCHAR(255) UNIQUE NOT NULL,
-                password TEXT NOT NULL,
+                hashed_password TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);

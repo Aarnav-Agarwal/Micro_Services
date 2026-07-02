@@ -15,11 +15,10 @@ const sign_up = async (req, res) => {
         else {
             const hashpassword = await bcrypt.hash(password, 10)
 
-            const query = 'INSERT INTO users (name, email, hashed_password) VALUES ($1, $2, $3)'
+            const query = 'INSERT INTO users (name, email, hashed_password) VALUES ($1, $2, $3) RETURNING *'
             const values = [name, email, hashpassword]
 
             pool.query(query, values)
-
                 .then((result) => {
                     res.status(201).json({ message: 'User created successfully', user: result.rows[0] })
                 }).catch((err) => {

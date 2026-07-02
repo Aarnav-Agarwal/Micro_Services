@@ -1,11 +1,11 @@
 import { Pool } from "pg";
 
 const pool = new Pool({
-    host: "localhost",
-    user: "postgres",
-    port: 5432,
-    password: "admin123",
-    database: "file service",
+    host: process.env.DB_HOST || 'localhost',
+    user: process.env.DB_USER || 'postgres',
+    port: parseInt(process.env.DB_PORT || '5432', 10),
+    password: process.env.DB_PASSWORD || 'secret123',
+    database: process.env.DB_NAME || 'file_db'
 });
 
 pool.connect()
