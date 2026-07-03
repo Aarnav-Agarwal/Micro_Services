@@ -1,0 +1,8 @@
+node_modules/
+.env
+.env.shared
+api-gateway/.env
+auth-service/.env
+file-service/.env
+share-service/.env
+file-service/docs/*

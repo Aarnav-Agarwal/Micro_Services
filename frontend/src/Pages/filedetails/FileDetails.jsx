@@ -138,37 +138,39 @@ function FileDetails() {
           )}
         </div>
 
-        <div className="shareSection">
-          <h2>Share Management</h2>
-          <div className="shareInput">
-            <input
-              value={shareId}
-              onChange={(e) => setShareId(e.target.value)}
-              placeholder="Enter user id"
-            />
+        {file.owner_id === loggedInUser.id && (
+          <div className="shareSection">
+            <h2>Share Management</h2>
+            <div className="shareInput">
+              <input
+                value={shareId}
+                onChange={(e) => setShareId(e.target.value)}
+                placeholder="Enter user id"
+              />
 
-            <button onClick={shareFile}>Share</button>
-          </div>
-          <h3>Shared With</h3>
-          {sharedUsers.length > 0 ? (
-            sharedUsers.map((user) => (
-              <div className="userCard" key={user.id}>
-                <div>
-                  <p>User_id: {user.shared_with_user_id}</p>
+              <button onClick={shareFile}>Share</button>
+            </div>
+            <h3>Shared With</h3>
+            {sharedUsers.length > 0 ? (
+              sharedUsers.map((user) => (
+                <div className="userCard" key={user.id}>
+                  <div>
+                    <p>User_id: {user.shared_with_user_id}</p>
+                  </div>
+
+                  <button
+                    className="removeBtn"
+                    onClick={() => removeAccess(user.id)}
+                  >
+                    Remove
+                  </button>
                 </div>
-
-                <button
-                  className="removeBtn"
-                  onClick={() => removeAccess(user.id)}
-                >
-                  Remove
-                </button>
-              </div>
-            ))
-          ) : (
-            <p>Not shared with anyone</p>
-          )}
-        </div>
+              ))
+            ) : (
+              <p>Not shared with anyone</p>
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

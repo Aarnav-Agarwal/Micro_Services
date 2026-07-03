@@ -1,23 +1,17 @@
-import axios from "axios";
+import jwt from "jsonwebtoken";
 const authenticate = async (req,res,next) => {
     try {
-        const authHeader = req.headers.authorization;
-
-        if (!authHeader) {
+        const token = req.headers.authorization?.split(" ")[1];
+        if (!token) {
             return res.status(401).json({
-                message: "Token missing"
+                message: "Unauthorized"
             });
         }
-        const authBaseUrl = process.env.AUTH_SERVICE || "http://localhost:4001/auth";
-        const authUrl = authBaseUrl.endsWith("/auth") ? `${authBaseUrl}/me` : `${authBaseUrl}/auth/me`;
-        const response = await axios.get(authUrl,
-                {
-                    headers: {authorization: authHeader}
-                }
-            );
-        req.user = response.data.user;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        req.user = decoded;
         next();
-    } catch (err) {
+    } 
+    catch (error) {
         return res.status(401).json({
             message: "Unauthorized"
         });

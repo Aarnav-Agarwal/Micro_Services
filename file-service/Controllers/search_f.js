@@ -18,7 +18,7 @@ const find = async (req, res) => {
         const file = result.rows[0];
 
         // Authorization check
-        if (file.owner_id !== req.user.id) {
+        if (file.owner_id != req.user.id) {
             try {
                 const shareServiceUrl = process.env.SHARE_SERVICE_INTERNAL || 'http://localhost:4003/shares';
                 const response = await fetch(`${shareServiceUrl}/file/${id}`, {
@@ -27,7 +27,7 @@ const find = async (req, res) => {
                 if (response.ok) {
                     const data = await response.json();
                     const shares = data.files || [];
-                    const isShared = shares.some(s => s.shared_with_user_id === req.user.id);
+                    const isShared = shares.some(s => s.shared_with_user_id == req.user.id);
                     if (!isShared) {
                         return res.status(403).json({
                             success: false,
