@@ -1,6 +1,5 @@
 import pool from "../Models/file_db.js";
-import path from "path";
-import fs from "fs";
+import { minioClient, BUCKET_NAME } from "../Config/minio.js";
 
 const download = async (req, res) => {
     try {
@@ -47,15 +46,23 @@ const download = async (req, res) => {
             }
         }
 
-        const resolvedPath = path.resolve(file.stored_path);
-        if (!fs.existsSync(resolvedPath)) {
+        // Stream object from MinIO
+        try {
+            const stat = await minioClient.statObject(BUCKET_NAME, file.object_key);
+
+            res.setHeader('Content-Type', file.mime_type);
+            res.setHeader('Content-Disposition', `attachment; filename="${encodeURIComponent(file.original_name)}"`);
+            res.setHeader('Content-Length', stat.size);
+
+            const stream = await minioClient.getObject(BUCKET_NAME, file.object_key);
+            stream.pipe(res);
+        } catch (minioErr) {
+            console.error("object not found:", minioErr);
             return res.status(404).json({
                 success: false,
                 message: "File physically missing"
             });
         }
-
-        return res.download(resolvedPath, file.original_name);
     } catch (err) {
         console.error("Error downloading file:", err);
         return res.status(500).json({

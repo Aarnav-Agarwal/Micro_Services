@@ -16,7 +16,7 @@ pool.connect()
             id SERIAL PRIMARY KEY,
             owner_id INTEGER NOT NULL,
             original_name VARCHAR(255) NOT NULL,
-            stored_path TEXT NOT NULL,
+            object_key TEXT NOT NULL,
             size_bytes BIGINT NOT NULL,
             mime_type VARCHAR(100) NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

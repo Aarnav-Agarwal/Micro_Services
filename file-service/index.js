@@ -5,6 +5,7 @@ import fileRoutes from "./Routes/file_routes.js";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import auth from "./Middlewares/authenticate.js"
+import { initBucket } from "./Config/minio.js";
 
 
 dotenv.config({ path: "../.env.shared" });
@@ -19,7 +20,14 @@ app.use(cookieParser())
 
 app.use('/files',auth, fileRoutes);
 
-
-app.listen(PORT, () => {
-  console.log(`File Service is running on port ${PORT}`);
-});
+// Initializing MinIO bucket
+initBucket()
+  .then(() => {
+    app.listen(PORT, () => {
+      console.log(`File Service is running on port ${PORT}`);
+    });
+  })
+  .catch((err) => {
+    console.error("Failed to initialize MinIO bucket:", err);
+    process.exit(1);
+  });

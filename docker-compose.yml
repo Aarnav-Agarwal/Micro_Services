@@ -18,6 +18,25 @@ services:
       timeout: 5s
       retries: 5
 
+  minio:
+    image: minio/minio
+    container_name: minio
+    restart: always
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000/minio/health/live"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   auth_service:
     build: ./auth-service
     container_name: auth-service
@@ -47,12 +66,18 @@ services:
       DB_PASSWORD: secret123
       DB_NAME: file_db
       SHARE_SERVICE_INTERNAL: http://share_service:4003/shares
+      MINIO_ENDPOINT: minio
+      MINIO_PORT: 9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+      MINIO_BUCKET: file-uploads
+      MINIO_USE_SSL: "false"
     ports:
       - "4002:4002"
-    volumes:
-      - ./file-service/docs:/app/docs
     depends_on:
       Databases:
+        condition: service_healthy
+      minio:
         condition: service_healthy
 
   share_service:
@@ -111,3 +136,4 @@ services:
 
 volumes:
   postgres_data:
+  minio_data:

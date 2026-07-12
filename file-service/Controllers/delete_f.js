@@ -1,5 +1,5 @@
 import pool from "../Models/file_db.js";
-import fs from "fs/promises";
+import { minioClient, BUCKET_NAME } from "../Config/minio.js";
 
 const delf = async (req, res) => {
     try {
@@ -20,11 +20,11 @@ const delf = async (req, res) => {
             return res.status(403).send("Access Denied");
         }
 
-        //del fm disk
+        //del from MinIO
         try {
-            await fs.unlink(file.stored_path);
+            await minioClient.removeObject(BUCKET_NAME, file.object_key);
         } catch (err) {
-            console.log("Error deleting file from disk:", err);
+            console.log("Error deleting file from MinIO:", err);
         }
         
         //del from db
