@@ -84,4 +84,34 @@ const login = async (req, res) => {
     }
 
 }
-export { sign_up, login }
+
+const checkUserExists = async (req, res) => {
+    try {
+        const { id } = req.params;
+        if (isNaN(parseInt(id, 10))) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid user ID'
+            });
+        }
+        const result = await pool.query('SELECT id, name, email FROM users WHERE id = $1', [id]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+        return res.status(200).json({
+            success: true,
+            user: result.rows[0]
+        });
+    } catch (err) {
+        console.error('Error checking user existence:', err);
+        return res.status(500).json({
+            success: false,
+            message: 'Internal Server Error'
+        });
+    }
+}
+
+export { sign_up, login, checkUserExists }

@@ -92,6 +92,7 @@ services:
       DB_PASSWORD: secret123
       DB_NAME: share_db
       FILE_SERVICE_INTERNAL: http://file_service:4002/files
+      AUTH_SERVICE_INTERNAL: http://auth_service:4001/auth
     ports:
       - "4003:4003"
     depends_on:

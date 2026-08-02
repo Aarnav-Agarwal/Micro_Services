@@ -18,6 +18,35 @@ const share = async (req, res) => {
             });
         }
 
+        if (shared_with_user_id !== undefined && shared_with_user_id !== null && shared_with_user_id !== '') {
+            if (Number(shared_with_user_id) === Number(owner_id)) {
+                return res.status(400).json({
+                    success: false,
+                    message: "You cannot share a file with yourself"
+                });
+            }
+
+            const authServiceUrl = process.env.AUTH_SERVICE_INTERNAL || 'http://localhost:4001/auth';
+            try {
+                const userResponse = await fetch(`${authServiceUrl}/users/${shared_with_user_id}`, {
+                    headers: { Authorization: req.headers.authorization }
+                });
+
+                if (!userResponse.ok) {
+                    return res.status(404).json({
+                        success: false,
+                        message: "The user you are trying to share with does not exist"
+                    });
+                }
+            } catch (err) {
+                console.error("Error:", err);
+                return res.status(500).json({
+                    success: false,
+                    message: "Error verifying target user existence"
+                });
+            }
+        }
+
         const fileServiceUrl = process.env.FILE_SERVICE_INTERNAL || 'http://localhost:4002/files';
         try {
             const fileResponse = await fetch(`${fileServiceUrl}/${file_id}`, {

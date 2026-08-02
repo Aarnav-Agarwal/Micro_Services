@@ -8,6 +8,8 @@ function Dashboard() {
   const [files, setFiles] = useState([]);
   const fileInputRef = useRef();
 
+  const loggedInUser = JSON.parse(localStorage.getItem("user") || "{}");
+
   useEffect(() => {
     fetchFiles();
   }, []);
@@ -75,8 +77,16 @@ function Dashboard() {
   return (
     <div className="dashboard">
       <div className="header">
-        <h1>My Files</h1>
-        <p>Manage and access your uploaded files</p>
+        <div className="headerLeft">
+          <h1>My Files</h1>
+          <p>Manage and access your uploaded files</p>
+        </div>
+        {loggedInUser.id && (
+          <div className="stats">
+            <h3>User ID: {loggedInUser.id}</h3>
+            <p>Logged in as: {loggedInUser.name}</p>
+          </div>
+        )}
       </div>
 
       <div className="fileContainer">
